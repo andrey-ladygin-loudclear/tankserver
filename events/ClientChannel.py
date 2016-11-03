@@ -8,15 +8,14 @@ class EmulatePlayer():
 
 class ClientChannel(Channel):
     def Network(self, data):
-
-        if data.get('action') == Global.Actions.TANK_MOVE:
+        if data.get('action') == Global.NetworkActions.TANK_MOVE:
             for player in Global.objects['players']:
                 if player.id == data.get('id'):
-                    player.position = data.get('new_pos')
+                    player.update(data)
                     break
 
 
-        if data.get('action') == Global.Actions.TANK_FIRE:
+        if data.get('action') == Global.NetworkActions.TANK_FIRE:
             for player in Global.objects['players']:
                 if player.id == data.get('id'):
                     player.fire(data)
