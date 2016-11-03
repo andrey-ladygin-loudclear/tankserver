@@ -4,16 +4,16 @@ import random
 import math
 
 
-class StandartBullet():
+class HeavyBullet():
     id = 0
-    scale = 0.8
-    damage = 1
-    damageRadius = 5
+    scale = 1
+    damage = 10
+    damageRadius = 20
+    position = (0, 0)
     fireLength = 1000
     rotation = 0
-    position = (0, 0)
 
-    speed = 50
+    speed = 35
 
     bullets_fired_offset_x = 6
     bullets_fired_offset_y = 20
@@ -25,7 +25,7 @@ class StandartBullet():
         self.angle_of_deflection = self.getAngleDeflection()
 
     def getAngleDeflection(self):
-        return random.randrange(-100, 100) / 10
+        return random.randrange(-100, 100) / 5
 
     def update(self):
         angle = self.rotation
@@ -39,6 +39,6 @@ class StandartBullet():
             'id': self.id,
             'position': self.position,
             'rotation': self.rotation,
-            'typeClass': 'StandartBullet',
+            'typeClass': 'HeavyBullet',
             'type': 'bullet',
         }

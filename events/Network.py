@@ -15,7 +15,6 @@ class Network(Server):
 
     def Connected(self, channel, addr):
         print("new connection:", channel)
-        print('send data to client')
 
         Global.game.addPlayer()
 
@@ -28,5 +27,7 @@ class Network(Server):
     def sendDataToClients(self, channel):
         while True:
             #print("send Data To Client")
-            channel.Send({'action' : Global.NetworkActions.UPDATE, 'objects': Global.game.getAllObjects()})
+            os = Global.game.getAllObjects()
+            print(len(os))
+            channel.Send({'action' : Global.NetworkActions.UPDATE, 'objects': os})
             sleep(0.1)

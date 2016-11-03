@@ -1,6 +1,7 @@
 import math
 
 import Global
+from gameObjects.bullets.HeavyBullet import HeavyBullet
 
 from gameObjects.bullets.StandartBullet import StandartBullet
 
@@ -12,6 +13,7 @@ class Tank:
     rotation = 0
     gun_rotation = 0
     position = (0, 0)
+    parent_id = 0
 
     speed = 0
     speed_acceleration = 0.2
@@ -74,8 +76,13 @@ class Tank:
         self.gun_rotation = self.rotation + self.gun_rotation_offset
 
     def fire(self, bulletObj):
-        bullet = StandartBullet()
+
+        if bulletObj.get('type') == 'HeavyBullet': bullet = HeavyBullet()
+        if bulletObj.get('type') == 'StandartBullet': bullet = StandartBullet()
+
         bullet.position = bulletObj.get('pos')
         bullet.rotation = bulletObj.get('rotation')
+        bullet.parent_id = self.id
+        bullet.id = Global.game.getNextId()
 
         Global.objects['bullets'].append(bullet)

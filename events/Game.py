@@ -50,14 +50,14 @@ class Game:
     def callUpdate(self):
         while True:
             self.update()
-            sleep(0.1)
+            sleep(0.05)
 
     def update(self):
         for bullet in Global.objects['bullets']:
-            angle = bullet.rotation
-            x = bullet.speed * math.cos(math.radians(angle - 180 + bullet.angle_of_deflection))
-            y = bullet.speed * math.sin(math.radians(angle + bullet.angle_of_deflection))
-            bullet.position = bullet.moveTo = tuple(map(operator.add, bullet.position, (x, y)))
+            bullet.update()
+
+        # for player in Global.objects['players']:
+        #     player.update()
 
     def getNextId(self):
         self.last_id += 1
