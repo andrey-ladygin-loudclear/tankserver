@@ -3,6 +3,8 @@ import random
 
 import math
 
+import Global
+
 
 class HeavyBullet():
     id = 0
@@ -13,7 +15,7 @@ class HeavyBullet():
     fireLength = 1000
     rotation = 0
 
-    speed = 35
+    speed = 20
 
     bullets_fired_offset_x = 6
     bullets_fired_offset_y = 20
@@ -26,6 +28,12 @@ class HeavyBullet():
 
     def getAngleDeflection(self):
         return random.randrange(-100, 100) / 5
+
+    def destroy(self):
+        for channel in Global.Clients:
+            channel.Send({"action": Global.NetworkActions.DESTROY, "type": "bullet", 'id': self.id})
+
+        if self in Global.objects['bullets']: Global.objects['bullets'].remove(self)
 
     def update(self):
         angle = self.rotation

@@ -1,8 +1,8 @@
-import math
-import operator
 from time import sleep
+import cocos.collision_model as cm
 
 import Global
+from gameObjects.Explosion import Explosion
 
 from gameObjects.Tank import Tank
 from gameObjects.Wall import Wall
@@ -16,34 +16,40 @@ class Game:
         if len(Global.objects['walls']):
             return Global.objects['walls']
 
-        walls = []
-
         for i in range(20):
-            wall = {
-                'id': self.getNextId(),
-                'type': 'BrickWall',
-                'position': (i*32, 500)
-            }
-            walls.append(wall)
-            cm_wall = Wall()
-            cm_wall.id = wall.get('id')
-            cm_wall.update_position(wall['position'])
+            wall = Wall()
+            wall.id = self.getNextId()
+            wall.type = 'BrickWall'
+            wall.position = (i*32, 500)
 
-            Global.collision_manager.add(cm_wall) ## ADD TO COLLISIONS
+            wall.cshape = cm.AARectShape(
+                wall.position,
+                wall.width,
+                wall.height
+            )
+            Global.objects['walls'].append(wall)
+            Global.collision_manager.add(wall)
 
         for i in range(30):
-            wall = {
-                'id': self.getNextId(),
-                'type': 'BrickWall',
-                'position': (i*32 + 680, 500)
-            }
-            walls.append(wall)
-            cm_wall = Wall()
-            cm_wall.id = wall.get('id')
-            cm_wall.update_position(wall['position'])
-            Global.collision_manager.add(cm_wall) ## ADD TO COLLISIONS
+            wall = Wall()
+            wall.id = self.getNextId()
+            wall.type = 'BrickWall'
+            wall.position = (i*32 + 680, 500)
 
-        Global.objects['walls'] = walls
+            wall.cshape = cm.AARectShape(
+                wall.position,
+                wall.width,
+                wall.height
+            )
+            Global.objects['walls'].append(wall)
+            Global.collision_manager.add(wall)
+
+        return Global.objects['walls']
+
+    def wallsObjects(self):
+        walls = []
+        for wall in self.walls():
+            walls.append(wall.getObjectFromSelf())
 
         return walls
 
@@ -55,9 +61,25 @@ class Game:
     def update(self):
         for bullet in Global.objects['bullets']:
             bullet.update()
+            bullet.cshape = cm.AARectShape(
+                bullet.position,
+                3,
+                2
+            )
+            collisions = Global.collision_manager.objs_colliding(bullet)
 
-        # for player in Global.objects['players']:
-        #     player.update()
+            if collisions:
+                for wall in Global.objects['walls']:
+                    if wall in collisions:
+                        print('EXPLOSION')
+                        explosion = Explosion(bullet)
+                        explosion.checkDamageCollisions()
+                        bullet.destroy()
+                        break
+
+        for wall in Global.objects['walls']:
+            if wall.health <= 0:
+                wall.destroy()
 
     def getNextId(self):
         self.last_id += 1
@@ -73,6 +95,7 @@ class Game:
         tank.tankClass = 'KVTank'
         tank.position = self.getPlayerPosition()
         Global.objects['players'].append(tank)
+        #Global.collision_manager.add(tank)
 
     def getAllObjects(self):
         objects = []

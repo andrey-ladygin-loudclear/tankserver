@@ -17,17 +17,17 @@ class Network(Server):
         print("new connection:", channel)
 
         Global.game.addPlayer()
+        Global.Clients.append(channel)
 
         thread = Thread(target = self.sendDataToClients, args=(channel,))
         thread.setDaemon(True)
         thread.start()
 
-        channel.Send({'action': Global.NetworkActions.INIT, 'walls': Global.game.walls()})
+        channel.Send({'action': Global.NetworkActions.INIT, 'walls': Global.game.wallsObjects()})
 
     def sendDataToClients(self, channel):
         while True:
-            #print("send Data To Client")
             os = Global.game.getAllObjects()
-            print(len(os))
+            #print(len(os))
             channel.Send({'action' : Global.NetworkActions.UPDATE, 'objects': os})
-            sleep(0.1)
+            sleep(0.05)

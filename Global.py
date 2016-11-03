@@ -4,7 +4,7 @@ from events.Game import Game
 
 
 def init():
-    global objects, collision_manager, server, game
+    global objects, collision_manager, server, game, Clients
 
     objects = {
         'walls': [],
@@ -13,6 +13,7 @@ def init():
         'players': [],
     }
 
+    Clients = []
     game = Game()
     server = 'localhost'
     collision_manager = cm.CollisionManagerBruteForce()
@@ -22,3 +23,4 @@ class NetworkActions:
     TANK_MOVE = '2'
     UPDATE = '3'
     TANK_FIRE = '4'
+    DESTROY = '5'
