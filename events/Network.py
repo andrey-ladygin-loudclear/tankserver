@@ -19,9 +19,9 @@ class Network(Server):
         Global.game.addPlayer()
         Global.Clients.append(channel)
 
-        thread = Thread(target = self.sendDataToClients, args=(channel,))
-        thread.setDaemon(True)
-        thread.start()
+        # thread = Thread(target = self.sendDataToClients, args=(channel,))
+        # thread.setDaemon(True)
+        # thread.start()
 
         channel.Send({'action': Global.NetworkActions.INIT, 'walls': Global.game.wallsObjects()})
 

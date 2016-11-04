@@ -9,10 +9,12 @@ connections_listener = Network(localaddr=(Global.server, 1332))
 
 # myserver.SendToAll({"action": "processSync"}) !!!!!!!!!!!!!!!!!!!!!!!!!
 
-thread = Thread(target = Global.game.callUpdate)
-thread.setDaemon(True)
-thread.start()
+#thread = Thread(target = Global.game.callUpdate)
+#thread.setDaemon(True)
+#thread.start()
 
 while True:
     connections_listener.Pump()
-    sleep(0.0001)
+    Global.game.update()
+    #sleep(0.0001)
+    sleep(0.04)

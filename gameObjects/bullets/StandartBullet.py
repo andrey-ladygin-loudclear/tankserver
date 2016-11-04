@@ -30,8 +30,9 @@ class StandartBullet():
         return random.randrange(-100, 100) / 10
 
     def destroy(self):
-        for channel in Global.Clients:
-            channel.Send({"action": Global.NetworkActions.DESTROY, "type": "bullet", 'id': self.id})
+        Global.game.addEvent({"action": Global.NetworkActions.DESTROY, "type": "bullet", 'id': self.id})
+        #for channel in Global.Clients:
+        #    channel.Send({"action": Global.NetworkActions.DESTROY, "type": "bullet", 'id': self.id})
 
         if self in Global.objects['bullets']: Global.objects['bullets'].remove(self)
 

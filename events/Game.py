@@ -10,6 +10,7 @@ from gameObjects.Wall import Wall
 
 class Game:
     last_id = 0
+    events = []
 
     def walls(self):
 
@@ -24,8 +25,8 @@ class Game:
 
             wall.cshape = cm.AARectShape(
                 wall.position,
-                wall.width,
-                wall.height
+                wall.width // 2 - 2,
+                wall.height // 2 - 2
             )
             Global.objects['walls'].append(wall)
             Global.collision_manager.add(wall)
@@ -38,8 +39,8 @@ class Game:
 
             wall.cshape = cm.AARectShape(
                 wall.position,
-                wall.width,
-                wall.height
+                wall.width // 2 - 2,
+                wall.height // 2 - 2
             )
             Global.objects['walls'].append(wall)
             Global.collision_manager.add(wall)
@@ -63,7 +64,7 @@ class Game:
             bullet.update()
             bullet.cshape = cm.AARectShape(
                 bullet.position,
-                3,
+                2,
                 2
             )
             collisions = Global.collision_manager.objs_colliding(bullet)
@@ -71,7 +72,7 @@ class Game:
             if collisions:
                 for wall in Global.objects['walls']:
                     if wall in collisions:
-                        print('EXPLOSION')
+                        #print('EXPLOSION')
                         explosion = Explosion(bullet)
                         explosion.checkDamageCollisions()
                         bullet.destroy()
@@ -80,6 +81,23 @@ class Game:
         for wall in Global.objects['walls']:
             if wall.health <= 0:
                 wall.destroy()
+
+        for channel in Global.Clients:
+            os = Global.game.getAllObjects()
+            #print(len(os))
+            channel.Send({
+                'action' : Global.NetworkActions.UPDATE,
+                'objects': os,
+                'events' : Global.game.getLastEvents()
+            })
+
+    def addEvent(self, event):
+        self.events.append(event)
+
+    def getLastEvents(self):
+        events = self.events
+        self.events = []
+        return events
 
     def getNextId(self):
         self.last_id += 1
