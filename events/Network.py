@@ -15,7 +15,10 @@ class Network(Server):
 
     def Connected(self, channel, addr):
         print("new connection:", channel)
+        print(channel)
+        print(addr)
 
+        channel.id = 15
         Global.game.addPlayer()
         Global.Clients.append(channel)
 
@@ -23,9 +26,14 @@ class Network(Server):
         # thread.setDaemon(True)
         # thread.start()
 
-        channel.Send({'action': Global.NetworkActions.INIT, 'walls': Global.game.wallsObjects()})
+        channel.Send({
+            'action': Global.NetworkActions.INIT,
+            'walls': Global.game.wallsObjects(),
+            'id': channel.id
+        })
 
     def sendDataToClients(self, channel):
+        pass
         while True:
             os = Global.game.getAllObjects()
             #print(len(os))
