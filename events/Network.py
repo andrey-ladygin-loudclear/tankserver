@@ -6,6 +6,7 @@ from PodSixNet.Server import Server
 import Global
 from events.ClientChannel import ClientChannel
 
+ips = []
 
 class Network(Server):
     channelClass = ClientChannel
@@ -15,12 +16,16 @@ class Network(Server):
 
     def Connected(self, channel, addr):
         print("new connection:", channel)
-        print(channel)
-        print(addr)
+        ip, port = addr
 
-        channel.id = 15
+        if ip in ips:
+            Global.PullConnsctions.append(channel)
+        else:
+            Global.PullBulletsConnections.append(channel)
+
+        ips.append(ip)
+
         Global.game.addPlayer()
-        Global.Clients.append(channel)
 
         # thread = Thread(target = self.sendDataToClients, args=(channel,))
         # thread.setDaemon(True)
@@ -29,7 +34,7 @@ class Network(Server):
         channel.Send({
             'action': Global.NetworkActions.INIT,
             'walls': Global.game.wallsObjects(),
-            'id': channel.id
+            #'id': channel.id
         })
 
     def sendDataToClients(self, channel):

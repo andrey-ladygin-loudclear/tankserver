@@ -82,15 +82,6 @@ class Game:
             if wall.health <= 0:
                 wall.destroy()
 
-        for channel in Global.Clients:
-            os = Global.game.getAllObjects()
-            #print(len(os))
-            channel.Send({
-                'action' : Global.NetworkActions.UPDATE,
-                'objects': os,
-                'events' : Global.game.getLastEvents()
-            })
-
     def addEvent(self, event):
         self.events.append(event)
 
@@ -115,6 +106,27 @@ class Game:
         Global.objects['players'].append(tank)
         #Global.collision_manager.add(tank)
 
+    def getPlayers(self):
+        objects = []
+
+        for player in Global.objects['players']:
+            objects.append(player.getObjectFromSelf())
+
+        return objects
+
+    def getBullets(self):
+        objects = []
+
+        for bullet in Global.objects['bullets']:
+            objects.append(bullet.getObjectFromSelf())
+
+        return objects
+
+
+
+
+
+
     def getAllObjects(self):
         objects = []
 
@@ -126,3 +138,17 @@ class Game:
 
         return objects
 
+
+    def callSendPlayers(self):
+        while True:
+            self.sendPlayers()
+            sleep(0.05)
+
+
+    def sendPlayers(self):
+        for channel in Global.PullConnsctions:
+            channel.Send({
+                'action' : Global.NetworkActions.UPDATE,
+                'objects': Global.game.getAllObjects(),
+                'events' : Global.game.getLastEvents()
+            })
