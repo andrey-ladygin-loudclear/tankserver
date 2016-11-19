@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 import cocos.collision_model as cm
 
 import Global
@@ -60,6 +60,14 @@ class Game:
             sleep(0.05)
 
     def update(self):
+        #t0 = time()
+        # for channel in Global.PullConnsctions:
+        #     channel.Send({
+        #         'action' : Global.NetworkActions.UPDATE,
+        #         'objects': Global.game.getAllObjects(),
+        #         'events' : Global.game.getLastEvents()
+        #     })
+
         for bullet in Global.objects['bullets']:
             bullet.update()
             bullet.cshape = cm.AARectShape(
@@ -81,6 +89,13 @@ class Game:
         for wall in Global.objects['walls']:
             if wall.health <= 0:
                 wall.destroy()
+
+
+        # t1 = time()
+        #
+        # total = t1-t0
+        # print('Total: ' + str(total))
+
 
     def addEvent(self, event):
         self.events.append(event)
@@ -139,13 +154,20 @@ class Game:
         return objects
 
 
-    def callSendPlayers(self):
+    def callSendDataToPlayers(self):
         while True:
             self.sendPlayers()
+            for channel in Global.PullConnsctions:
+                channel.Send({
+                    'action' : Global.NetworkActions.UPDATE,
+                    'objects': Global.game.getAllObjects(),
+                    'events' : Global.game.getLastEvents()
+                })
             sleep(0.05)
 
 
     def sendPlayers(self):
+        pass
         for channel in Global.PullConnsctions:
             channel.Send({
                 'action' : Global.NetworkActions.UPDATE,

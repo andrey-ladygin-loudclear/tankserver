@@ -15,7 +15,7 @@ class StandartBullet():
     rotation = 0
     position = (0, 0)
 
-    speed = 30
+    speed = 3
 
     bullets_fired_offset_x = 6
     bullets_fired_offset_y = 20
@@ -27,7 +27,7 @@ class StandartBullet():
         self.angle_of_deflection = self.getAngleDeflection()
 
     def getAngleDeflection(self):
-        return random.randrange(-100, 100) / 10
+        return random.randrange(-1000, 1000) / 100
 
     def destroy(self):
         Global.game.addEvent({"action": Global.NetworkActions.DESTROY, "type": "bullet", 'id': self.id})

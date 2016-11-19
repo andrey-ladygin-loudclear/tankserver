@@ -6,8 +6,6 @@ from PodSixNet.Server import Server
 import Global
 from events.ClientChannel import ClientChannel
 
-ips = []
-
 class Network(Server):
     channelClass = ClientChannel
 
@@ -18,12 +16,7 @@ class Network(Server):
         print("new connection:", channel)
         ip, port = addr
 
-        if ip in ips:
-            Global.PullConnsctions.append(channel)
-        else:
-            Global.PullBulletsConnections.append(channel)
-
-        ips.append(ip)
+        Global.PullConnsctions.append(channel)
 
         Global.game.addPlayer()
 
