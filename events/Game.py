@@ -1,4 +1,4 @@
-from time import sleep, time
+from time import sleep
 import cocos.collision_model as cm
 
 import Global
@@ -60,13 +60,6 @@ class Game:
             sleep(0.05)
 
     def update(self):
-        #t0 = time()
-        # for channel in Global.PullConnsctions:
-        #     channel.Send({
-        #         'action' : Global.NetworkActions.UPDATE,
-        #         'objects': Global.game.getAllObjects(),
-        #         'events' : Global.game.getLastEvents()
-        #     })
 
         for bullet in Global.objects['bullets']:
             bullet.update()
@@ -75,12 +68,13 @@ class Game:
                 2,
                 2
             )
+            Global.Queue.append(bullet.getObjectFromSelf())
+
             collisions = Global.collision_manager.objs_colliding(bullet)
 
             if collisions:
                 for wall in Global.objects['walls']:
                     if wall in collisions:
-                        #print('EXPLOSION')
                         explosion = Explosion(bullet)
                         explosion.checkDamageCollisions()
                         bullet.destroy()
@@ -90,12 +84,8 @@ class Game:
             if wall.health <= 0:
                 wall.destroy()
 
-
-        # t1 = time()
-        #
-        # total = t1-t0
-        # print('Total: ' + str(total))
-
+        for player in Global.objects['players']:
+            Global.Queue.append(player.getObjectFromSelf())
 
     def addEvent(self, event):
         self.events.append(event)
@@ -115,62 +105,20 @@ class Game:
     def addPlayer(self):
         tank = Tank()
         tank.id = self.getNextId()
-        tank.fraction = 'player'
-        tank.tankClass = 'KVTank'
+        tank.fraction = Global.NetworkDataCodes.PLAYER
+        tank.tankClass = Global.NetworkDataCodes.KVTank
         tank.position = self.getPlayerPosition()
         Global.objects['players'].append(tank)
-        #Global.collision_manager.add(tank)
-
-    def getPlayers(self):
-        objects = []
-
-        for player in Global.objects['players']:
-            objects.append(player.getObjectFromSelf())
-
-        return objects
-
-    def getBullets(self):
-        objects = []
-
-        for bullet in Global.objects['bullets']:
-            objects.append(bullet.getObjectFromSelf())
-
-        return objects
-
-
-
-
-
-
-    def getAllObjects(self):
-        objects = []
-
-        for player in Global.objects['players']:
-            objects.append(player.getObjectFromSelf())
-
-        for bullet in Global.objects['bullets']:
-            objects.append(bullet.getObjectFromSelf())
-
-        return objects
-
 
     def callSendDataToPlayers(self):
         while True:
-            self.sendPlayers()
+            data = Global.Queue
+            Global.Queue = []
             for channel in Global.PullConnsctions:
                 channel.Send({
-                    'action' : Global.NetworkActions.UPDATE,
-                    'objects': Global.game.getAllObjects(),
-                    'events' : Global.game.getLastEvents()
+                    'action': Global.NetworkActions.UPDATE,
+                    'o': data
                 })
+
             sleep(0.05)
 
-
-    def sendPlayers(self):
-        pass
-        for channel in Global.PullConnsctions:
-            channel.Send({
-                'action' : Global.NetworkActions.UPDATE,
-                'objects': Global.game.getAllObjects(),
-                'events' : Global.game.getLastEvents()
-            })

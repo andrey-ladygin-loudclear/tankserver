@@ -31,9 +31,6 @@ class StandartBullet():
 
     def destroy(self):
         Global.game.addEvent({"action": Global.NetworkActions.DESTROY, "type": "bullet", 'id': self.id})
-        #for channel in Global.Clients:
-        #    channel.Send({"action": Global.NetworkActions.DESTROY, "type": "bullet", 'id': self.id})
-
         if self in Global.objects['bullets']: Global.objects['bullets'].remove(self)
 
     def update(self):
@@ -45,9 +42,8 @@ class StandartBullet():
 
     def getObjectFromSelf(self):
         return {
-            'id': self.id,
-            'position': self.position,
-            'rotation': self.rotation,
-            'typeClass': 'StandartBullet',
-            'type': 'bullet',
+            Global.NetworkDataCodes.ID: self.id,
+            Global.NetworkDataCodes.POSITION: self.position,
+            Global.NetworkDataCodes.ROTATION: self.rotation,
+            Global.NetworkDataCodes.TYPE: Global.NetworkDataCodes.STANDART_BULLET,
         }

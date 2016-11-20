@@ -25,13 +25,12 @@ class Tank:
 
     def getObjectFromSelf(self):
         return {
-            'id': self.id,
-            'position': self.position,
-            'rotation': self.rotation,
-            'gun_rotation': self.gun_rotation,
-            'fraction': self.fraction,
-            'tankClass': self.tankClass,
-            'type': 'tank',
+            Global.NetworkDataCodes.ID: self.id,
+            Global.NetworkDataCodes.POSITION: self.position,
+            Global.NetworkDataCodes.ROTATION: self.rotation,
+            Global.NetworkDataCodes.GUN_ROTATION: self.gun_rotation,
+            Global.NetworkDataCodes.FRACTION: self.fraction,
+            Global.NetworkDataCodes.TYPE: self.tankClass,
         }
 
     def update(self, object):

@@ -6,7 +6,7 @@ from events.Game import Game
 
 
 def init():
-    global objects, collision_manager, server, game, PullConnsctions, PullBulletsConnections
+    global objects, collision_manager, server, game, PullConnsctions, PullBulletsConnections, Queue
 
     objects = {
         'walls': [],
@@ -17,6 +17,8 @@ def init():
 
     PullConnsctions = []
     PullBulletsConnections = []
+
+    Queue = []
 
     game = Game()
     server = 'localhost'
@@ -36,6 +38,8 @@ class NetworkDataCodes:
     PLAYER = 'p'
     TANK = 't'
     BULLET = 'b'
+    STANDART_BULLET = 'sb'
+    HEAVY_BULLET = 'hb'
 
 class NetworkActions:
     INIT = '1'

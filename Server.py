@@ -1,5 +1,5 @@
 from threading import Thread
-from time import sleep
+from time import sleep, time
 
 import Global
 from events.Network import Network
@@ -15,6 +15,9 @@ thread.start()
 
 while True:
     connections_listener.Pump()
+    #t = time()
     Global.game.update()
+    #total = time()-t
+    #print(total)
     #sleep(0.0001)
-    sleep(0.001)
+    sleep(0.01)

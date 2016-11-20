@@ -44,9 +44,8 @@ class HeavyBullet():
 
     def getObjectFromSelf(self):
         return {
-            'id': self.id,
-            'position': self.position,
-            'rotation': self.rotation,
-            'typeClass': 'HeavyBullet',
-            'type': 'bullet',
+            Global.NetworkDataCodes.ID: self.id,
+            Global.NetworkDataCodes.POSITION: self.position,
+            Global.NetworkDataCodes.ROTATION: self.rotation,
+            Global.NetworkDataCodes.TYPE: Global.NetworkDataCodes.HEAVY_BULLET,
         }
