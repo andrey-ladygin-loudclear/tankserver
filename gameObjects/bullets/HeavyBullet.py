@@ -2,6 +2,7 @@
 import random
 
 import math
+from time import time
 
 import Global
 
@@ -15,7 +16,7 @@ class HeavyBullet():
     fireLength = 1000
     rotation = 0
 
-    speed = 20
+    speed = 200
 
     bullets_fired_offset_x = 6
     bullets_fired_offset_y = 20
@@ -25,9 +26,10 @@ class HeavyBullet():
 
     def __init__(self):
         self.angle_of_deflection = self.getAngleDeflection()
+        self.last_update_time = time()
 
     def getAngleDeflection(self):
-        return random.randrange(-100, 100) / 5
+        return random.randrange(-1000, 1000) / 50
 
     def destroy(self):
         for channel in Global.Clients:
@@ -38,8 +40,9 @@ class HeavyBullet():
     def update(self):
         angle = self.rotation
         curr_x, curr_y = self.position
-        new_x = self.speed * math.cos(math.radians(angle - 180 + self.angle_of_deflection)) + curr_x
-        new_y = self.speed * math.sin(math.radians(angle + self.angle_of_deflection)) + curr_y
+        time_delta = (time() - self.last_update_time)
+        new_x = self.speed * time_delta * math.cos(math.radians(angle - 180 + self.angle_of_deflection)) + curr_x
+        new_y = self.speed * time_delta * math.sin(math.radians(angle + self.angle_of_deflection)) + curr_y
         self.position = (new_x, new_y)
 
     def getObjectFromSelf(self):

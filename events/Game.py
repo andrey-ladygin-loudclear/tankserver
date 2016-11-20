@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 import cocos.collision_model as cm
 
 import Global
@@ -61,6 +61,9 @@ class Game:
 
     def update(self):
 
+        #print(time_offset)
+        t = time()
+
         for bullet in Global.objects['bullets']:
             bullet.update()
             bullet.cshape = cm.AARectShape(
@@ -86,6 +89,8 @@ class Game:
 
         for player in Global.objects['players']:
             Global.Queue.append(player.getObjectFromSelf())
+
+        print('count: ' + str(len(Global.objects['bullets'])) + ', time: ' + str((time() - t)))
 
     def addEvent(self, event):
         self.events.append(event)
@@ -119,6 +124,5 @@ class Game:
                     'action': Global.NetworkActions.UPDATE,
                     'o': data
                 })
-
-            sleep(0.05)
+            sleep(0.01)
 
