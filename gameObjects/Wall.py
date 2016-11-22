@@ -29,6 +29,7 @@ class Wall():
 
     def getObjectFromSelf(self):
         return {
+            'action': Global.NetworkActions.UPDATE,
             'id': self.id,
             'position': self.position,
             'type': self.type

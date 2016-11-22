@@ -30,6 +30,8 @@ class NetworkDataCodes:
     FRACTION = 'f'
     GUN_ROTATION = 'g'
     POSITION = 'p'
+    LAST_UPDATE_TIME = 'lt'
+    ANGLE_OF_DEFLECTION = 'aod'
     ROTATION = 'r'
     TYPE = 'y'
     ID = 'i'

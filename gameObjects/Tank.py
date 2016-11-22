@@ -1,4 +1,5 @@
 import math
+from time import time
 
 import Global
 from gameObjects.bullets.HeavyBullet import HeavyBullet
@@ -25,6 +26,7 @@ class Tank:
 
     def getObjectFromSelf(self):
         return {
+            'action': Global.NetworkActions.UPDATE,
             Global.NetworkDataCodes.ID: self.id,
             Global.NetworkDataCodes.POSITION: self.position,
             Global.NetworkDataCodes.ROTATION: self.rotation,
@@ -75,7 +77,6 @@ class Tank:
         self.gun_rotation = self.rotation + self.gun_rotation_offset
 
     def fire(self, bulletObj):
-
         if bulletObj.get('type') == 'HeavyBullet': bullet = HeavyBullet()
         if bulletObj.get('type') == 'StandartBullet': bullet = StandartBullet()
 
@@ -83,5 +84,7 @@ class Tank:
         bullet.rotation = bulletObj.get('rotation')
         bullet.parent_id = self.id
         bullet.id = Global.game.getNextId()
+
+        Global.Queue.append(bullet.getObjectFromSelf())
 
         Global.objects['bullets'].append(bullet)
