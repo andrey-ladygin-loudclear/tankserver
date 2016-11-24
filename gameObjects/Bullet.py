@@ -12,6 +12,7 @@ class Bullet():
     damage = 10
     damageRadius = 20
     position = (0, 0)
+    start_position = (0, 0)
     rotation = 0
     last_update_time = 0
     type = ''
@@ -24,14 +25,25 @@ class Bullet():
         return random.randrange(-1000, 1000) / 50
 
     def destroy(self):
-        for channel in Global.Clients:
-            channel.Send({"action": Global.NetworkActions.DESTROY, "type": "bullet", 'id': self.id})
+        Global.Queue.append({
+            "action": Global.NetworkActions.DESTROY,
+            Global.NetworkDataCodes.TYPE: self.type,
+            Global.NetworkDataCodes.POSITION: self.position,
+            Global.NetworkDataCodes.ID: self.id
+        })
 
         if self in Global.objects['bullets']: Global.objects['bullets'].remove(self)
 
     def update(self):
+        # angle = self.rotation
+        # curr_x, curr_y = self.position
+        # time_delta = (time() - self.last_update_time)
+        # new_x = self.speed * time_delta * math.cos(math.radians(angle - 180 + self.angle_of_deflection)) + curr_x
+        # new_y = self.speed * time_delta * math.sin(math.radians(angle + self.angle_of_deflection)) + curr_y
+        # self.position = (new_x, new_y)
+
         angle = self.rotation
-        curr_x, curr_y = self.position
+        curr_x, curr_y = self.start_position
         time_delta = (time() - self.last_update_time)
         new_x = self.speed * time_delta * math.cos(math.radians(angle - 180 + self.angle_of_deflection)) + curr_x
         new_y = self.speed * time_delta * math.sin(math.radians(angle + self.angle_of_deflection)) + curr_y

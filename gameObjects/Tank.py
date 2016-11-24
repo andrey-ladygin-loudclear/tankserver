@@ -81,6 +81,7 @@ class Tank:
         if bulletObj.get('type') == 'StandartBullet': bullet = StandartBullet()
 
         bullet.position = bulletObj.get('pos')
+        bullet.start_position = bullet.position
         bullet.rotation = bulletObj.get('rotation')
         bullet.parent_id = self.id
         bullet.id = Global.game.getNextId()
