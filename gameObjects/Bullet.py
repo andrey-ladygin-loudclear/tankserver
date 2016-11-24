@@ -8,6 +8,7 @@ import Global
 class Bullet():
 
     id = 0
+    parent_id = 0
     damage = 10
     damageRadius = 20
     position = (0, 0)
@@ -42,6 +43,7 @@ class Bullet():
             Global.NetworkDataCodes.LAST_UPDATE_TIME: str(self.last_update_time),
             Global.NetworkDataCodes.ANGLE_OF_DEFLECTION: self.angle_of_deflection,
             Global.NetworkDataCodes.ID: self.id,
+            Global.NetworkDataCodes.PARENT_ID: self.parent_id,
             Global.NetworkDataCodes.POSITION: self.position,
             Global.NetworkDataCodes.ROTATION: self.rotation,
             Global.NetworkDataCodes.TYPE: self.type,
