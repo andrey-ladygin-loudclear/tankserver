@@ -11,7 +11,7 @@ class HeavyBullet(Bullet):
     damageRadius = 20
     fireLength = 1000
 
-    speed = 200
+    speed = 500
 
     bullets_fired_offset_x = 6
     bullets_fired_offset_y = 20

@@ -7,7 +7,7 @@ class Wall():
     id = 0
     health = 20
     position = (0, 0)
-    type = ''
+    type = 'wall'
 
     width = 32
     height = 32
@@ -22,8 +22,12 @@ class Wall():
         self.health -= bullet.damage / range
 
     def destroy(self):
-        for channel in Global.Clients:
-            channel.Send({"action": Global.NetworkActions.DESTROY, "type": "wall", 'id': self.id})
+        Global.Queue.append({
+            "action": Global.NetworkActions.DESTROY,
+            Global.NetworkDataCodes.TYPE: self.type,
+            Global.NetworkDataCodes.POSITION: self.position,
+            Global.NetworkDataCodes.ID: self.id
+        })
 
         if self in Global.objects['walls']: Global.objects['walls'].remove(self)
 
