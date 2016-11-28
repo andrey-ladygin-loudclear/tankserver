@@ -2,6 +2,7 @@ from time import sleep, time
 import cocos.collision_model as cm
 
 import Global
+from gameObjects.Collisions import Collisions
 from gameObjects.Explosion import Explosion
 from gameObjects.Map import Map
 
@@ -27,6 +28,9 @@ class Game:
             sleep(0.01)
 
     def update(self):
+        for player in Global.objects['players']:
+            player.setNewPosition()
+
         for bullet in Global.objects['bullets']:
             bullet.update()
             bullet.cshape = cm.AARectShape(
@@ -34,18 +38,11 @@ class Game:
                 2,
                 2
             )
-            #Global.Queue.append(bullet.getObjectFromSelf())
 
-            collisions = Global.collision_manager.objs_colliding(bullet)
-
-            if collisions:
-                for wall in Global.objects['walls']:
-                    if wall in collisions:
-                        print('COLLISION')
-                        explosion = Explosion(bullet)
-                        explosion.checkDamageCollisions()
-                        bullet.destroy()
-                        break
+            if Collisions.checkWithWalls(bullet):
+                explosion = Explosion(bullet)
+                explosion.checkDamageCollisions()
+                bullet.destroy()
 
         for wall in Global.objects['walls']:
             if wall.health <= 0:

@@ -1,7 +1,8 @@
 import math
-from time import time
+import cocos.collision_model as cm
 
 import Global
+from gameObjects.Collisions import Collisions
 from gameObjects.bullets.HeavyBullet import HeavyBullet
 
 from gameObjects.bullets.StandartBullet import StandartBullet
@@ -17,12 +18,14 @@ class Tank:
     parent_id = 0
 
     speed = 0
-    speed_acceleration = 0.2
-    max_speed = 3
+    speed_acceleration = 0.1
+    max_speed = 2
     rotation_speed = 1.2
     gun_rotation_speed = 1.2
 
     gun_rotation_offset = 0
+
+    client_change_speed = False
 
     def getObjectFromSelf(self):
         return {
@@ -36,30 +39,46 @@ class Tank:
         }
 
     def update(self, object):
-        self.addSpeed(object.get('mov'))
+        self.increaseSpeed(object.get('mov'))
         self.setGunRotation(object.get('gun_turn'))
         self.setTankRotation(object.get('turn'), object.get('mov'))
-        self.setNewPosition()
 
-    def setNewPosition(self):
+    def getNewPosition(self):
         x, y = self.position
         tank_rotation = self.rotation
         cos_x = math.cos(math.radians(tank_rotation + 180))
         sin_x = math.sin(math.radians(tank_rotation + 180))
-        self.position = (self.speed * sin_x + x, self.speed * cos_x + y)
+        return (self.speed * sin_x + x, self.speed * cos_x + y)
 
-    def addSpeed(self, moving_directions):
+    def setNewPosition(self):
+        x, y = self.position
+        self.position = self.getNewPosition()
+        self.scale = 0.5
+        self.cshape = cm.AARectShape(self.position, 26//2, 46//2)
+
+        if Collisions.checkWithWalls(self):
+            self.position = (x, y)
+
+        self.reduceSpeed()
+        self.client_change_speed = False
+
+    def reduceSpeed(self):
+        if not self.client_change_speed:
+            if abs(self.speed - self.speed_acceleration) < self.speed_acceleration:
+                self.speed = 0
+
+            if self.speed > 0:
+                self.speed = self.speed - self.speed_acceleration
+            elif self.speed < 0:
+                self.speed = self.speed + self.speed_acceleration
+
+    def increaseSpeed(self, moving_directions):
         if moving_directions:
+            self.client_change_speed = True
             speed = self.speed + self.speed_acceleration * moving_directions
 
             if abs(speed) < self.max_speed:
                 self.speed = speed
-
-        else:
-            if self.speed > 0:
-                self.speed -= self.speed_acceleration
-            elif self.speed < 0:
-                self.speed += self.speed_acceleration
 
     def setTankRotation(self, turns_direction, moving_directions):
         self.rotation = self.getTankRotation(turns_direction, moving_directions)
