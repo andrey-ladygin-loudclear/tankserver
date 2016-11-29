@@ -11,6 +11,7 @@ class Wall():
 
     width = 32
     height = 32
+    scale = 1
 
     def damage(self, bullet):
         x, y = self.position
