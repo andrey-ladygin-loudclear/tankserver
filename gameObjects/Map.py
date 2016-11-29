@@ -12,6 +12,20 @@ class Map:
             wall = Wall()
             wall.id = Global.game.getNextId()
             wall.type = 'BrickWall'
+            wall.position = (i*32, 300)
+
+            wall.cshape = cm.AARectShape(
+                wall.position,
+                wall.width // 2 - 2,
+                wall.height // 2 - 2
+            )
+            Global.objects['walls'].append(wall)
+            Global.collision_manager.add(wall)
+
+        for i in range(20):
+            wall = Wall()
+            wall.id = Global.game.getNextId()
+            wall.type = 'BrickWall'
             wall.position = (i*32, 500)
 
             wall.cshape = cm.AARectShape(

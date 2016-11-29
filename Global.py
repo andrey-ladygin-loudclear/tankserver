@@ -50,4 +50,5 @@ class NetworkActions:
     UPDATE = '3'
     TANK_FIRE = '4'
     DESTROY = '5'
+    TEST = '6'
 

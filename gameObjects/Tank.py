@@ -17,6 +17,9 @@ class Tank:
     position = (0, 0)
     parent_id = 0
 
+    width = 0
+    height = 0
+
     speed = 0
     speed_acceleration = 0.1
     max_speed = 2
@@ -53,10 +56,10 @@ class Tank:
     def setNewPosition(self):
         x, y = self.position
         self.position = self.getNewPosition()
-        self.scale = 0.5
-        self.cshape = cm.AARectShape(self.position, 26//2, 46//2)
+        self.cshape = cm.AARectShape(self.position, self.width//2, self.height//2)
 
-        if Collisions.checkWithWalls(self):
+        #if Collisions.checkWithWalls(self):
+        if Collisions.checkManualCollisionsWidthWalls(self):
             self.position = (x, y)
 
         self.reduceSpeed()

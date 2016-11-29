@@ -8,6 +8,7 @@ from gameObjects.Map import Map
 
 from gameObjects.Tank import Tank
 from gameObjects.Wall import Wall
+from gameObjects.tanks.KVTank import KVTank
 
 
 class Game:
@@ -51,75 +52,6 @@ class Game:
         for player in Global.objects['players']:
             Global.Queue.append(player.getObjectFromSelf())
 
-    def update_old(self, n):
-
-        bullets_len = len(Global.objects['bullets'])
-        for i in range(bullets_len):
-            if i+1 == n or (i+1) % n == 0:
-                try:
-                    bullet = Global.objects['bullets'][i]
-                except IndexError:
-                    continue
-
-                bullet.update()
-                bullet.cshape = cm.AARectShape(
-                    bullet.position,
-                    2,
-                    2
-                )
-                #Global.Queue.append(bullet.getObjectFromSelf())
-
-                collisions = Global.collision_manager.objs_colliding(bullet)
-
-                if collisions:
-                    for wall in Global.objects['walls']:
-                        if wall in collisions:
-                            print('COLLISION')
-                            explosion = Explosion(bullet)
-                            explosion.checkDamageCollisions()
-                            bullet.destroy()
-                            break
-
-        for wall in Global.objects['walls']:
-            if wall.health <= 0:
-                wall.destroy()
-
-        for player in Global.objects['players']:
-            Global.Queue.append(player.getObjectFromSelf())
-        return
-
-        #print(time_offset)
-        t = time()
-
-
-        for bullet in Global.objects['bullets']:
-            bullet.update()
-            bullet.cshape = cm.AARectShape(
-                bullet.position,
-                2,
-                2
-            )
-            #Global.Queue.append(bullet.getObjectFromSelf())
-
-            collisions = Global.collision_manager.objs_colliding(bullet)
-
-            if collisions:
-                for wall in Global.objects['walls']:
-                    if wall in collisions:
-                        explosion = Explosion(bullet)
-                        explosion.checkDamageCollisions()
-                        bullet.destroy()
-                        break
-
-        for wall in Global.objects['walls']:
-            if wall.health <= 0:
-                wall.destroy()
-
-        for player in Global.objects['players']:
-            Global.Queue.append(player.getObjectFromSelf())
-
-        #print('Update all objects: count: ' + str(len(Global.objects['bullets'])) + ', time: ' + str((time() - t)))
-
     def addEvent(self, event):
         self.events.append(event)
 
@@ -136,10 +68,8 @@ class Game:
         return (100, 100)
 
     def addPlayer(self):
-        tank = Tank()
+        tank = KVTank()
         tank.id = self.getNextId()
-        tank.fraction = Global.NetworkDataCodes.PLAYER
-        tank.tankClass = Global.NetworkDataCodes.KVTank
         tank.position = self.getPlayerPosition()
         Global.objects['players'].append(tank)
 
