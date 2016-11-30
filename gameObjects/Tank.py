@@ -19,6 +19,7 @@ class Tank:
 
     width = 0
     height = 0
+    scale = 1
 
     speed = 0
     speed_acceleration = 0.1
@@ -93,6 +94,24 @@ class Tank:
             tank_rotate *= moving_directions
 
         return self.rotation + tank_rotate
+
+    def getPoints(self):
+        x, y = self.position
+        w, h = (self.width * self.scale, self.height * self.scale)
+        #print(self.rotation)
+        cos_x = math.cos(math.radians(self.rotation))
+        sin_x = math.sin(math.radians(self.rotation))
+        x1, y1 = x - w//2, y - h//2
+        x2, y2 = x + w//2, y - h//2
+        x3, y3 = x + w//2, y + h//2
+        x4, y4 = x - w//2, y + h//2
+
+        x1, y1 = x1 - h//2 * sin_x, y1 - w//2 * cos_x
+        x2, y2 = x2 - h//2 * sin_x, y2 - w//2 * cos_x
+        x3, y3 = x3 - h//2 * sin_x, y3 - w//2 * cos_x
+        x4, y4 = x4 - h//2 * sin_x, y4 - w//2 * cos_x
+
+        return ((x1, y1),(x2, y2),(x3, y3),(x4, y4))
 
     def setGunRotation(self, gun_turns_direction):
         self.gun_rotation_offset += self.gun_rotation_speed * (gun_turns_direction)

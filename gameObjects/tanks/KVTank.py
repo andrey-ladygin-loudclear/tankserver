@@ -3,8 +3,8 @@ from gameObjects.Tank import Tank
 
 
 class KVTank(Tank):
-    width = 26
-    height = 46
+    width = 50
+    height = 92
     scale = 0.5
     tankClass = ''
     fraction = ''
