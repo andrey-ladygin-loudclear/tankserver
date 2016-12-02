@@ -34,14 +34,18 @@ class Collisions:
         for wall in Global.objects['walls']:
             wall_points = wall.getPoints()
 
-            #if wall.position == (32, 300):
-            if Collisions.intersection(object_points, wall_points):
-                print('COLLISION WITH TANK')
+            if wall.position == (32, 300):
+                if Collisions.intersection(object_points, wall_points):
+                    print('COLLISION WITH TANK')
 
     @staticmethod
     def intersection(object1, object2):
         o1_x1, o1_x2, o1_x3, o1_x4 = object1
         o2_x1, o2_x2, o2_x3, o2_x4 = object2
+
+        # print(object1)
+        # print(object2)
+        # print(' ')
 
         #print('TANK')
         #print(o1_x1, o1_y1, o1_x2, o1_y2)
@@ -53,9 +57,13 @@ class Collisions:
             'action': Global.NetworkActions.TEST,
             Global.NetworkDataCodes.POSITION: ((o1_x1, o1_x2), (o1_x2, o1_x3), (o1_x3, o1_x4), (o1_x4, o1_x1))
         })
+        # Global.Queue.append({
+        #     'action': Global.NetworkActions.TEST,
+        #     Global.NetworkDataCodes.POSITION: ((o2_x1, o2_x2), (o2_x2, o2_x3), (o2_x3, o2_x4), (o2_x4, o2_x1))
+        # })
 
-        #if o1_x1 > o2_x1 and o1_y1 > o2_y1 and o1_x2 < o2_x2 and o1_y2 < o2_y2:
-        #    return True
+        if o1_x1[0] > o2_x1[0] and o1_x1[1] > o2_x1[1] and o1_x2[0] > o2_x2[0] and o1_x2[1] > o2_x2[1] and o1_x3[0] < o2_x3[0] and o1_x3[1] < o2_x3[1] and o1_x4[0] < o2_x4[0] and o1_x4[1] < o2_x4[1]:
+            return True
 
 
         return False

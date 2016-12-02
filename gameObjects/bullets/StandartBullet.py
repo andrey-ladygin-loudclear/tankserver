@@ -12,7 +12,7 @@ class StandartBullet(Bullet):
     damageRadius = 5
     fireLength = 1000
 
-    speed = 300
+    speed = 400
 
     bullets_fired_offset_x = 6
     bullets_fired_offset_y = 20
@@ -23,6 +23,3 @@ class StandartBullet(Bullet):
     def __init__(self):
         Bullet.__init__(self)
         self.type = Global.NetworkDataCodes.STANDART_BULLET
-
-    def getAngleDeflection(self):
-        return random.randrange(-1000, 1000) / 100

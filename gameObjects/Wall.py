@@ -7,7 +7,6 @@ class Wall():
     id = 0
     health = 20
     position = (0, 0)
-    type = 'wall'
 
     width = 32
     height = 32
@@ -25,7 +24,7 @@ class Wall():
     def destroy(self):
         Global.Queue.append({
             "action": Global.NetworkActions.DESTROY,
-            Global.NetworkDataCodes.TYPE: self.type,
+            Global.NetworkDataCodes.TYPE: Global.NetworkDataCodes.WALL,
             Global.NetworkDataCodes.POSITION: self.position,
             Global.NetworkDataCodes.ID: self.id
         })
@@ -46,7 +45,7 @@ class Wall():
     def getObjectFromSelf(self):
         return {
             'action': Global.NetworkActions.UPDATE,
-            'id': self.id,
-            'position': self.position,
-            'type': self.type
+            Global.NetworkDataCodes.ID: self.id,
+            Global.NetworkDataCodes.POSITION: self.position,
+            Global.NetworkDataCodes.TYPE: Global.NetworkDataCodes.WALL
         }

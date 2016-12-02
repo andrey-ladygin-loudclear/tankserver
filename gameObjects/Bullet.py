@@ -16,13 +16,11 @@ class Bullet():
     rotation = 0
     last_update_time = 0
     type = ''
+    fireLength = 0
 
     def __init__(self):
-        self.angle_of_deflection = self.getAngleDeflection()
         self.last_update_time = time()
-
-    def getAngleDeflection(self):
-        return random.randrange(-1000, 1000) / 50
+        self.fireLength = self.fireLength + random.randrange(-self.fireLength * 0.1, self.fireLength * 0.1)
 
     def destroy(self):
         Global.Queue.append({
@@ -35,25 +33,28 @@ class Bullet():
         if self in Global.objects['bullets']: Global.objects['bullets'].remove(self)
 
     def update(self):
-        # angle = self.rotation
-        # curr_x, curr_y = self.position
-        # time_delta = (time() - self.last_update_time)
-        # new_x = self.speed * time_delta * math.cos(math.radians(angle - 180 + self.angle_of_deflection)) + curr_x
-        # new_y = self.speed * time_delta * math.sin(math.radians(angle + self.angle_of_deflection)) + curr_y
-        # self.position = (new_x, new_y)
-
         angle = self.rotation
         curr_x, curr_y = self.start_position
         time_delta = (time() - self.last_update_time)
-        new_x = self.speed * time_delta * math.cos(math.radians(angle - 180 + self.angle_of_deflection)) + curr_x
-        new_y = self.speed * time_delta * math.sin(math.radians(angle + self.angle_of_deflection)) + curr_y
+        new_x = self.speed * time_delta * math.cos(math.radians(angle - 180)) + curr_x
+        new_y = self.speed * time_delta * math.sin(math.radians(angle)) + curr_y
         self.position = (new_x, new_y)
+
+    def exceededTheLengthLimit(self):
+        if self.getLength(self.start_position, self.position) > self.fireLength:
+            return True
+
+        return False
+
+    def getLength(self, point1, point2):
+        deltax = math.pow(point1[0] - point2[0], 2)
+        deltay = math.pow(point1[1] - point2[1], 2)
+        return math.sqrt(deltax + deltay)
 
     def getObjectFromSelf(self):
         return {
             'action': Global.NetworkActions.TANK_FIRE,
             Global.NetworkDataCodes.LAST_UPDATE_TIME: str(self.last_update_time),
-            Global.NetworkDataCodes.ANGLE_OF_DEFLECTION: self.angle_of_deflection,
             Global.NetworkDataCodes.ID: self.id,
             Global.NetworkDataCodes.PARENT_ID: self.parent_id,
             Global.NetworkDataCodes.POSITION: self.position,

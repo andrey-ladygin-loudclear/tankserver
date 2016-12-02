@@ -11,7 +11,7 @@ class HeavyBullet(Bullet):
     damageRadius = 20
     fireLength = 1000
 
-    speed = 500
+    speed = 600
 
     bullets_fired_offset_x = 6
     bullets_fired_offset_y = 20
@@ -22,6 +22,3 @@ class HeavyBullet(Bullet):
     def __init__(self):
         Bullet.__init__(self)
         self.type = Global.NetworkDataCodes.HEAVY_BULLET
-
-    def getAngleDeflection(self):
-        return random.randrange(-1000, 1000) / 50

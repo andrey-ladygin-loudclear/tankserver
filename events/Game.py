@@ -40,7 +40,7 @@ class Game:
                 2
             )
 
-            if Collisions.checkWithWalls(bullet):
+            if Collisions.checkWithWalls(bullet) or bullet.exceededTheLengthLimit():
                 explosion = Explosion(bullet)
                 explosion.checkDamageCollisions()
                 bullet.destroy()
