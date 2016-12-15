@@ -18,7 +18,7 @@ class Network(Server):
 
         Global.PullConnsctions.append(channel)
 
-        Global.game.addPlayer()
+        id = Global.game.addPlayer()
 
         # thread = Thread(target = self.sendDataToClients, args=(channel,))
         # thread.setDaemon(True)
@@ -27,6 +27,7 @@ class Network(Server):
         channel.Send({
             'action': Global.NetworkActions.INIT,
             'walls': Global.game.wallsObjects(),
+            'id': id
             #'id': channel.id
         })
 

@@ -72,6 +72,7 @@ class Game:
         tank.id = self.getNextId()
         tank.position = self.getPlayerPosition()
         Global.objects['players'].append(tank)
+        return tank.id
 
     def callSendDataToPlayers(self):
         while True:
