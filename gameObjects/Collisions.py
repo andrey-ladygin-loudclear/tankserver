@@ -18,63 +18,55 @@ class Collisions:
 
     @staticmethod
     def checkManualCollisionsWidthWalls(object):
-        w, h = object.width, object.height
-        scale = object.scale
-        x, y = object.position
-        rotation = object.rotation
-
         object_points = object.getPoints()
-
-        # Global.Queue.append({'action': Global.NetworkActions.TEST, Global.NetworkDataCodes.TYPE: 'clear'})
-        # Global.Queue.append({'action': Global.NetworkActions.TEST, Global.NetworkDataCodes.POSITION: (x1, y1)})
-        # Global.Queue.append({'action': Global.NetworkActions.TEST, Global.NetworkDataCodes.POSITION: (x2, y2)})
-        # Global.Queue.append({'action': Global.NetworkActions.TEST, Global.NetworkDataCodes.POSITION: (x3, y3)})
-        # Global.Queue.append({'action': Global.NetworkActions.TEST, Global.NetworkDataCodes.POSITION: (x4, y4)})
 
         for wall in Global.objects['walls']:
             wall_points = wall.getPoints()
 
-            if wall.position == (32, 300):
-                if Collisions.intersection(object_points, wall_points):
-                    print('COLLISION WITH TANK')
+            if Collisions.intersection(object_points, wall_points):
+                #print('COLLISION WITH TANK')
+                return True
 
     @staticmethod
     def intersection(object1, object2):
-        o1_x1, o1_x2, o1_x3, o1_x4 = object1
-        o2_x1, o2_x2, o2_x3, o2_x4 = object2
+        # o1_x1, o1_x2, o1_x3, o1_x4 = object1
+        # o2_x1, o2_x2, o2_x3, o2_x4 = object2
 
-        # print(object1)
-        # print(object2)
-        # print(' ')
-
-        #print('TANK')
-        #print(o1_x1, o1_y1, o1_x2, o1_y2)
-        #print('WALL')
-        #print(o2_x1, o2_y1, o2_x2, o2_y2)
-        #print('')
-
-        Global.Queue.append({
-            'action': Global.NetworkActions.TEST,
-            Global.NetworkDataCodes.POSITION: ((o1_x1, o1_x2), (o1_x2, o1_x3), (o1_x3, o1_x4), (o1_x4, o1_x1))
-        })
         # Global.Queue.append({
         #     'action': Global.NetworkActions.TEST,
-        #     Global.NetworkDataCodes.POSITION: ((o2_x1, o2_x2), (o2_x2, o2_x3), (o2_x3, o2_x4), (o2_x4, o2_x1))
+        #     Global.NetworkDataCodes.POSITION: ((o1_x1, o1_x2), (o1_x2, o1_x3), (o1_x3, o1_x4), (o1_x4, o1_x1))
         # })
 
-        if o1_x1[0] > o2_x1[0] and o1_x1[1] > o2_x1[1] and o1_x2[0] > o2_x2[0] and o1_x2[1] > o2_x2[1] and o1_x3[0] < o2_x3[0] and o1_x3[1] < o2_x3[1] and o1_x4[0] < o2_x4[0] and o1_x4[1] < o2_x4[1]:
-            return True
-
+        for corner_tank_point in object1:
+            if Collisions.check(object2, corner_tank_point):
+                return True
 
         return False
-        #double x1,y1,x2,y2,x,y;
 
-        #if x>=x1 && y>=y1 && x<=x2 && y<=y2:
-        #    return True
+    @staticmethod
+    def check(points, check_point):
+        sum = 0
+        px = check_point[0]
+        py = check_point[1]
 
-    #@staticmethod
-    #def intersect(A,B):
-        #return A[1] < B[3] or A[3] > b.y || a.x1 < b.x || a.x > b.x1
+        for k in range(len(points)):
+            x1 = points[k][0] - px
+            y1 = points[k][1] - py
+
+            try:
+                x2 = points[k + 1][0] - px
+                y2 = points[k + 1][1] - py
+            except IndexError:
+                x2 = points[0][0] - px
+                y2 = points[0][1] - py
+
+            s1 = (x1*x1 + y1*y1 - x2*x1 - y2*y1)
+            d1 = (x1*y2 - x2*y1) + 0.0000001
+            s2 = (x2*x2 + y2*y2 - x2*x1 - y2*y1)
+            d2 = (x1*y2 - x2*y1) + 0.0000001
+            sum += math.atan(s1 / d1) + math.atan(s2 / d2)
+
+        return math.fabs(sum) > 0.01
 
     @staticmethod
     def getPointsFromDimensions(w, h, x, y, rotation = 0, scale = 1):

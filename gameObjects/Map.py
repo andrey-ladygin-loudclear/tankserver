@@ -50,4 +50,30 @@ class Map:
             Global.objects['walls'].append(wall)
             Global.collision_manager.add(wall)
 
+        wall = Wall()
+        wall.id = Global.game.getNextId()
+        wall.type = 'BrickWall'
+        wall.position = (0, 0)
+
+        wall.cshape = cm.AARectShape(
+            wall.position,
+            wall.width // 2 - 2,
+            wall.height // 2 - 2
+        )
+        Global.objects['walls'].append(wall)
+        Global.collision_manager.add(wall)
+
+        wall = Wall()
+        wall.id = Global.game.getNextId()
+        wall.type = 'BrickWall'
+        wall.position = (700, 700)
+
+        wall.cshape = cm.AARectShape(
+            wall.position,
+            wall.width // 2 - 2,
+            wall.height // 2 - 2
+        )
+        Global.objects['walls'].append(wall)
+        Global.collision_manager.add(wall)
+
         return Global.objects['walls']
