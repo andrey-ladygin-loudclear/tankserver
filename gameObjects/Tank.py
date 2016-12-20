@@ -21,6 +21,8 @@ class Tank:
     height = 0
     scale = 1
 
+    health = 100
+
     speed = 0
     speed_acceleration = 0.1
     max_speed = 2
@@ -148,3 +150,20 @@ class Tank:
         Global.Queue.append(bullet.getObjectFromSelf())
 
         Global.objects['bullets'].append(bullet)
+
+
+    def damage(self, bullet):
+        x, y = self.position
+        x2, y2 = bullet.position
+        deltax = math.pow(x - x2, 2)
+        deltay = math.pow(y - y2, 2)
+        delta = (deltax + deltay) / 3
+        range = math.sqrt(max(delta / self.width, 1))
+        self.health -= bullet.damage / range
+
+        Global.Queue.append({
+            "action": Global.NetworkActions.DAMAGE,
+            Global.NetworkDataCodes.TYPE: Global.NetworkDataCodes.TANK,
+            Global.NetworkDataCodes.ID: self.id,
+            Global.NetworkDataCodes.HEALTH: self.health
+        })

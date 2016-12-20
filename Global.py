@@ -35,6 +35,7 @@ class NetworkDataCodes:
     ROTATION = 'r'
     TYPE = 'y'
     ID = 'i'
+    HEALTH = 'h'
     PARENT_ID = 'pi'
 
     KVTank = 'k'
@@ -52,4 +53,5 @@ class NetworkActions:
     TANK_FIRE = '4'
     DESTROY = '5'
     TEST = '6'
+    DAMAGE = '7'
 

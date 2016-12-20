@@ -17,6 +17,26 @@ class Collisions:
         return False
 
     @staticmethod
+    def checkWithObjects(object, parent_id = None):
+        for player in Global.objects['players']:
+
+            if parent_id == player.id: continue
+
+            player_points = player.getPoints()
+            if Collisions.check(player_points, object.position):
+                return True
+
+        for enemy in Global.objects['enemies']:
+
+            if parent_id == enemy.id: continue
+
+            enemy_points = enemy.getPoints()
+            if Collisions.check(enemy_points, object.position):
+                return True
+
+        return False
+
+    @staticmethod
     def checkManualCollisionsWidthWalls(object):
         object_points = object.getPoints()
 
@@ -24,7 +44,6 @@ class Collisions:
             wall_points = wall.getPoints()
 
             if Collisions.intersection(object_points, wall_points):
-                #print('COLLISION WITH TANK')
                 return True
 
     @staticmethod
