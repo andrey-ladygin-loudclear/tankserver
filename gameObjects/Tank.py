@@ -157,9 +157,11 @@ class Tank:
         x2, y2 = bullet.position
         deltax = math.pow(x - x2, 2)
         deltay = math.pow(y - y2, 2)
-        delta = (deltax + deltay) / 3
-        range = math.sqrt(max(delta / self.width, 1))
-        self.health -= bullet.damage / range
+        delta = (deltax + deltay)
+        range = math.sqrt(delta / 8)
+        print('range: ' + str(range))
+        print('damage: ' + str(bullet.damage / max(range, 1)))
+        self.health -= bullet.damage / max(range, 1)
 
         Global.Queue.append({
             "action": Global.NetworkActions.DAMAGE,
