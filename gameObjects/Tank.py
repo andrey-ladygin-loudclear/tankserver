@@ -1,4 +1,6 @@
 import math
+import random
+
 import cocos.collision_model as cm
 
 import Global
@@ -158,14 +160,21 @@ class Tank:
         deltax = math.pow(x - x2, 2)
         deltay = math.pow(y - y2, 2)
         delta = (deltax + deltay)
-        range = math.sqrt(delta / 8)
+        range = math.sqrt(delta)
+        range = range - (self.width + self.height) * self.scale / 2
+        range = max(range / 4, 1)
+
+        dmg = bullet.damage - math.pow((( -2 * bullet.damageRadius / math.pow(bullet.damageRadius, 2) ) * math.pi * range), 2)
         print('range: ' + str(range))
-        print('damage: ' + str(bullet.damage / max(range, 1)))
-        self.health -= bullet.damage / max(range, 1)
+        print('damage (without rand): ' + str(dmg))
+        dmg += random.randrange(-bullet.damage / 10, bullet.damage / 10)
+
+        self.health -= dmg
 
         Global.Queue.append({
             "action": Global.NetworkActions.DAMAGE,
             Global.NetworkDataCodes.TYPE: Global.NetworkDataCodes.TANK,
             Global.NetworkDataCodes.ID: self.id,
-            Global.NetworkDataCodes.HEALTH: self.health
+            Global.NetworkDataCodes.HEALTH: self.health,
+            Global.NetworkDataCodes.DAMAGE: dmg
         })

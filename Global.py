@@ -36,6 +36,7 @@ class NetworkDataCodes:
     TYPE = 'y'
     ID = 'i'
     HEALTH = 'h'
+    DAMAGE = 'd'
     PARENT_ID = 'pi'
 
     KVTank = 'k'
@@ -45,6 +46,7 @@ class NetworkDataCodes:
     STANDART_BULLET = 'sb'
     HEAVY_BULLET = 'hb'
     WALL = 'w'
+
 
 class NetworkActions:
     INIT = '1'
