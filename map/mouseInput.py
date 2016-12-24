@@ -34,20 +34,24 @@ class MouseInput(Layer):
         # Then I just add the text!
         #self.add(self.text)
 
-        sublayer = BatchNode()
+        self.sublayer = BatchNode()
+        self.rightPanel = []
         for sprite in self.getRightPanel():
-            sublayer.add(sprite)
-        self.add(sublayer)
+            self.sublayer.add(sprite)
+            self.rightPanel.append(sprite)
+        self.add(self.sublayer)
 
     def getRightPanel(self):
         x, y = director.get_window_size()
         sprites = ['l0']
+        sp_obj = []
 
         for sprite in sprites:
             sprite = cocos.sprite.Sprite('walls/' + sprite + '.png')
-            sprite.position = x - sprite.width / 2, y + sprite.height / 2
+            sprite.position = x - sprite.width / 2, y - sprite.height / 2
+            sp_obj.append(sprite)
 
-        return sprites
+        return sp_obj
 
     def addBrick(self, x, y):
         sprite = cocos.sprite.Sprite('walls/l0.png')
@@ -76,7 +80,6 @@ class MouseInput(Layer):
     def checkButtons(self, dt):
         if self.keyboard[key.S]:
             self.buttonsProvider.exportToFile(self.walls)
-
 
     def removeBrick(self, x, y):
         fakeObj = self.objectProvider.getFakeObject((x,y))

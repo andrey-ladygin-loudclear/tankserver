@@ -4,8 +4,16 @@ from mouseInput import MouseInput
 
 global keyboard
 
-cocos.director.director.init(do_not_scale=True, resizable=True)
+class test(cocos.director.director):
+    def __init__(self, *args, **kwargs):
+        self.init(*args, **kwargs)
 
+    def scaled_resize_window(self, width, height):
+        super(test, self).scaled_resize_window(width, height)
+        print(width)
+
+#cocos.director.director.init(autoscale=False, resizable=True, )
+c = test(do_not_scale=True, resizable=True)
 
 keyboard = key.KeyStateHandler()
 cocos.director.director.window.push_handlers(keyboard)
