@@ -1,5 +1,5 @@
 import cocos
-from cocos.batch import BatchableNode
+from cocos.batch import BatchableNode, BatchNode
 from cocos.layer import Layer, director
 from cocos.text import Label
 import cocos.collision_model as cm
@@ -23,7 +23,7 @@ class MouseInput(Layer):
         super(MouseInput, self).__init__()
         self.keyboard = keyboard
         self.buttonsProvider = ButtonsProvider()
-        self.objectProvider = ObjectProvider()
+        self.objectProvider = ObjectProvider(self.keyboard, self.collision)
 
         self.text = Label("mod1",
                           font_name='Helvetica',
@@ -34,8 +34,23 @@ class MouseInput(Layer):
         # Then I just add the text!
         #self.add(self.text)
 
+        sublayer = BatchNode()
+        for sprite in self.getRightPanel():
+            sublayer.add(sprite)
+        self.add(sublayer)
+
+    def getRightPanel(self):
+        x, y = director.get_window_size()
+        sprites = ['l0']
+
+        for sprite in sprites:
+            sprite = cocos.sprite.Sprite('walls/' + sprite + '.png')
+            sprite.position = x - sprite.width / 2, y + sprite.height / 2
+
+        return sprites
+
     def addBrick(self, x, y):
-        sprite = cocos.sprite.Sprite('walls/brick1.png')
+        sprite = cocos.sprite.Sprite('walls/l0.png')
         sprite.type = 'brick1'
         sprite.position = x, y
         sprite.scale = 1
@@ -49,7 +64,7 @@ class MouseInput(Layer):
         if self.objectProvider.checkIntersec(sprite):
             return
 
-        nearWallPosition = self.objectProvider.getNearObject(x, y)
+        nearWallPosition = self.objectProvider.getNearObject(x, y, self.walls)
         if nearWallPosition:
             sprite.position = nearWallPosition
 
