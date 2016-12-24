@@ -7,9 +7,6 @@ from flask import json
 
 from pyglet.window import key
 
-from ButtonsProvider import ButtonsProvider
-from ObjectProvider import ObjectProvider
-
 
 class MouseInput(Layer):
     is_event_handler = True
@@ -22,9 +19,13 @@ class MouseInput(Layer):
     def __init__(self, keyboard):
         super(MouseInput, self).__init__()
         self.keyboard = keyboard
-        self.buttonsProvider = ButtonsProvider()
-        self.objectProvider = ObjectProvider()
 
+        # This time I set variables for the position rather than hardcoding it
+        # I do this because we will want to alter these values later
+        self.position_x = 100
+        self.position_y = 240
+
+        # Once again I make a label
         self.text = Label("mod1",
                           font_name='Helvetica',
                           font_size=16,
@@ -34,6 +35,7 @@ class MouseInput(Layer):
         # Then I just add the text!
         #self.add(self.text)
 
+    # Like last time we need to make a function to update that self.text label to display the mouse data
     def addBrick(self, x, y):
         sprite = cocos.sprite.Sprite('walls/brick1.png')
         sprite.type = 'brick1'
@@ -46,10 +48,10 @@ class MouseInput(Layer):
             sprite.height // 2
         )
 
-        if self.objectProvider.checkIntersec(sprite):
+        if self.checkIntersec(sprite):
             return
 
-        nearWallPosition = self.objectProvider.getNearObject(x, y)
+        nearWallPosition = self.getNearObject(x, y)
         if nearWallPosition:
             sprite.position = nearWallPosition
 
@@ -58,13 +60,53 @@ class MouseInput(Layer):
         self.add(sprite)
         self.collision.add(sprite)
 
+    def getNearObject(self, x, y):
+        dx = 20
+        wall = self.getObjectByPoints(x - dx, y)
+        if wall:
+            x, y = wall.position
+            return (x + wall.width, y)
+
+        wall = self.getObjectByPoints(x + dx, y)
+        if wall:
+            x, y = wall.position
+            return (x - wall.width, y)
+
+        wall = self.getObjectByPoints(x, y + dx)
+        if wall:
+            x, y = wall.position
+            return (x, y - wall.height)
+
+        wall = self.getObjectByPoints(x, y - dx)
+        if wall:
+            x, y = wall.position
+            return (x, y + wall.height)
+
+    def getObjectByPoints(self, x, y):
+        fakeObj = self.getFakeObject((x,y))
+        collisions = self.collision.objs_colliding(fakeObj)
+        if collisions:
+            for wall in self.walls:
+                if wall in collisions: return wall
+
     def checkButtons(self, dt):
         if self.keyboard[key.S]:
-            self.buttonsProvider.exportToFile(self.walls)
+            self.exportToFile()
 
+    def exportToFile(self):
+        data = []
+        for wall in self.walls:
+            data.append({
+                'position': wall.position,
+                'scale': wall.scale,
+                'type': wall.type,
+            })
+
+        with open('exportMap.json', 'w') as file_:
+            file_.write(json.dumps(data))
 
     def removeBrick(self, x, y):
-        fakeObj = self.objectProvider.getFakeObject((x,y))
+        fakeObj = self.getFakeObject((x,y))
         collisions = self.collision.objs_colliding(fakeObj)
         if collisions:
             for wall in self.walls:
@@ -74,7 +116,18 @@ class MouseInput(Layer):
                     if wall in self.collision.objs: self.collision.remove_tricky(wall)
                     #if wall in self.collision: self.collision.objs.remove(wall)
 
+    def checkIntersec(self, object):
+        collisions = self.collision.objs_colliding(object)
 
+        if collisions:
+            return True
+
+        return False
+
+    def getFakeObject(self, position, width = 2, height = 2):
+        obj = BatchableNode()
+        obj.cshape = cm.AARectShape(position,width // 2,height // 2)
+        return obj
 
     def on_mouse_motion(self, x, y, dx, dy):
         pass
