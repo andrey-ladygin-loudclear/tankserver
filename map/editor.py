@@ -13,9 +13,9 @@ cocos.director.director.window.push_handlers(keyboardHandler)
 #cocos.director.director.window.push_handlers(scroller)
 
 mouseInputHandler = MouseInput(keyboardHandler, scrollerHandler)
-#scrollerHandler.add(mouseInputHandler)
+scrollerHandler.add(mouseInputHandler)
 
-scene = cocos.scene.Scene(mouseInputHandler)#, scrollerHandler)
+scene = cocos.scene.Scene(mouseInputHandler, scrollerHandler)
 scene.schedule(mouseInputHandler.checkButtons)
 
 cocos.director.director.on_resize = mouseInputHandler.resize

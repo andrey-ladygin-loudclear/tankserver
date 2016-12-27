@@ -14,8 +14,8 @@ from ObjectProvider import ObjectProvider
 from sprites.destroyableObject import destroyableObject
 
 
-#class MouseInput(ScrollableLayer):
-class MouseInput(Layer):
+class MouseInput(ScrollableLayer):
+#class MouseInput(Layer):
     is_event_handler = True
     walls = []
     labels = []
@@ -36,16 +36,20 @@ class MouseInput(Layer):
         self.buttonsProvider = ButtonsProvider()
         self.objectProvider = ObjectProvider(self.keyboard, self.collision, self.rightPanelCollision)
 
-        self.text = Label("mod1",
-                          font_name='Helvetica',
-                          font_size=16,
-                          anchor_x='left',  anchor_y='top'
-                          )
+        self.text = Label("", font_name='Helvetica', font_size=16, anchor_x='left',  anchor_y='top')
+        self.text.position = (0,0)
+        self.add(self.text, z=5)
 
         #self.sublayer = cocos.layer.ScrollableLayer()
-        self.sublayer = BatchNode()
+        self.sublayer = cocos.layer.Layer()
+        #self.sublayer = BatchNode()
         self.rightPanel = []
         self.add(self.sublayer)
+
+
+        for sprite in self.getRightPanel():
+            self.sublayer.add(sprite)
+            self.rightPanel.append(sprite)
 
         #s = cocos.sprite.Sprite('assets/5x1.jpg')
         #s.position = (100, 100)
@@ -55,41 +59,37 @@ class MouseInput(Layer):
         if map: self.loadMap(map)
 
     def resize(self, width, height):
-        self.clearRightPanel()
-        for sprite in self.getRightPanel(width, height):
-            self.sublayer.add(sprite)
-            self.rightPanel.append(sprite)
-
-    def clearRightPanel(self):
-        for el in self.rightPanel:
-            self.sublayer.remove(el)
-            self.rightPanelCollision.remove_tricky(el)
-        self.rightPanel = []
-
-    def getRightPanel(self, x, y):
-        sprites = []
-        sp_obj = []
-        lastYPos = 0
-
-        for j in range(20):
-            for i in range(19):
-                sprites.append(str(j)+"x"+str(i)+".jpg")
-
         count = 0
         columns = 0
-        for sprite in sprites:
-            src = 'assets/' + sprite
-            sprite = cocos.sprite.Sprite(src)
-            sprite.src = src
-
+        lastYPos = 0
+        for sprite in self.rightPanel:
             lastYPos = sprite.height + lastYPos
-            lastXPos = x - sprite.width / 2 - 32 * columns
+            lastXPos = width - sprite.width / 2 - 32 * columns
             if count % 19 == 0:
                 columns += 1
                 lastYPos = 0
             count += 1
 
-            sprite.position = lastXPos, lastYPos
+            sprite.position = lastXPos, height - lastYPos
+            sprite.cshape = cm.AARectShape(
+                sprite.position,
+                sprite.width // 2,
+                sprite.height // 2
+            )
+
+    def getRightPanel(self):
+        sprites = []
+        sp_obj = []
+
+        for j in range(20):
+            for i in range(19):
+                sprites.append(str(j)+"x"+str(i)+".jpg")
+
+        for sprite in sprites:
+            src = 'assets/' + sprite
+            sprite = cocos.sprite.Sprite(src)
+            sprite.src = src
+            sprite.position = 0, 0
             sprite.cshape = cm.AARectShape(
                 sprite.position,
                 sprite.width // 2,
@@ -141,13 +141,15 @@ class MouseInput(Layer):
         y_direction = self.keyboard[key.UP] - self.keyboard[key.DOWN]
 
         if x_direction:
-            self.focusX += x_direction * 20
+            self.focusX += x_direction * 50
 
         if y_direction:
-            self.focusY += y_direction * 20
+            self.focusY += y_direction * 50
 
         if x_direction or y_direction:
-            pass#self.scroller.set_focus(self.focusX, self.focusY)
+            w, h = cocos.director.director.get_window_size()
+            self.resize(w+self.focusX - 19*32/4, h+self.focusY - 20*32)
+            self.scroller.set_focus(self.focusX, self.focusY)
 
         if self.keyboard[key.S]:
             self.buttonsProvider.exportToFile(self.walls)
@@ -174,6 +176,14 @@ class MouseInput(Layer):
         self.add(sprite)
         self.collision.add(sprite)
 
+    def showBlockInfo(self, x, y):
+        fakeObj = self.objectProvider.getFakeObject((x,y))
+        collisions = self.collision.objs_colliding(fakeObj)
+        if collisions:
+            for wall in collisions:
+                self.text.element.text = wall.type
+
+
     def on_mouse_motion(self, x, y, dx, dy):
         pass
         #self.addBrick(x, y)
@@ -188,6 +198,7 @@ class MouseInput(Layer):
         leftClick = buttons == 1
         rightClick = buttons == 4
         self.position_x, self.position_y = director.get_virtual_coordinates(x, y)
-        print(self.position_x)
+        print(str(x) + ' -> ' + str(self.position_x))
         if leftClick: self.addBrick(x, y)
         if rightClick: self.removeBrick(x, y)
+        self.showBlockInfo(x, y)
