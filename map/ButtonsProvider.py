@@ -16,7 +16,7 @@ class ButtonsProvider:
         with open('exportMap.json', 'w') as file_:
             file_.write(json.dumps(data))
 
-    def loadMap(self):
+    def getMap(self):
         with open('exportMap.json', 'r') as f:
              read_data = f.read()
 

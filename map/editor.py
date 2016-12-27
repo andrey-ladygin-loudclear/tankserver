@@ -7,15 +7,15 @@ global keyboard, scroller
 
 cocos.director.director.init(autoscale=False, resizable=True, width=3000, height=1000)
 
-keyboard = key.KeyStateHandler()
-scroller = cocos.layer.ScrollingManager()
-cocos.director.director.window.push_handlers(keyboard)
+keyboardHandler = key.KeyStateHandler()
+scrollerHandler = cocos.layer.ScrollingManager()
+cocos.director.director.window.push_handlers(keyboardHandler)
 #cocos.director.director.window.push_handlers(scroller)
 
-mouseInputHandler = MouseInput(keyboard, scroller)
-scroller.add(mouseInputHandler)
+mouseInputHandler = MouseInput(keyboardHandler, scrollerHandler)
+#scrollerHandler.add(mouseInputHandler)
 
-scene = cocos.scene.Scene(mouseInputHandler, scroller)
+scene = cocos.scene.Scene(mouseInputHandler)#, scrollerHandler)
 scene.schedule(mouseInputHandler.checkButtons)
 
 cocos.director.director.on_resize = mouseInputHandler.resize

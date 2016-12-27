@@ -6,12 +6,12 @@ class destroyableObject(sprite.Sprite):
     def __init__(self, object):
         self.type = object.get('type')
 
-        self.spriteName = 'walls/l0.png'
+        #self.src = 'walls/l0.png'
 
         #if self.type == 'brick':
-        self.spriteName = 'assets/' + str(object.get('src'))
+        self.src = str(object.get('src'))
 
-        super(destroyableObject, self).__init__(self.spriteName)
+        super(destroyableObject, self).__init__(self.src)
 
         self.position = object.get('position')
 

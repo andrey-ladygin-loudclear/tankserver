@@ -14,15 +14,16 @@ from ObjectProvider import ObjectProvider
 from sprites.destroyableObject import destroyableObject
 
 
-class MouseInput(ScrollableLayer):
+#class MouseInput(ScrollableLayer):
+class MouseInput(Layer):
     is_event_handler = True
     walls = []
     labels = []
     collision = cm.CollisionManagerBruteForce()
     rightPanelCollision = cm.CollisionManagerBruteForce()
 
-    focusX = 0
-    focusY = 0
+    focusX = 1500
+    focusY = 500
 
     currentSprite = None
 
@@ -41,11 +42,16 @@ class MouseInput(ScrollableLayer):
                           anchor_x='left',  anchor_y='top'
                           )
 
+        #self.sublayer = cocos.layer.ScrollableLayer()
         self.sublayer = BatchNode()
         self.rightPanel = []
         self.add(self.sublayer)
 
-        map = self.buttonsProvider.loadMap()
+        #s = cocos.sprite.Sprite('assets/5x1.jpg')
+        #s.position = (100, 100)
+        #self.sublayer.add(s)
+
+        map = self.buttonsProvider.getMap()
         if map: self.loadMap(map)
 
     def resize(self, width, height):
@@ -107,7 +113,7 @@ class MouseInput(ScrollableLayer):
         if not self.currentSprite: return
 
         sprite = cocos.sprite.Sprite(self.currentSprite.src)
-        sprite.type = 'brick'
+        sprite.type = 'background'
         sprite.src = self.currentSprite.src
         sprite.position = x // 32 * 32, y // 32 * 32
         #sprite.position = x, y
@@ -131,10 +137,17 @@ class MouseInput(ScrollableLayer):
         self.collision.add(sprite)
 
     def checkButtons(self, dt):
-        if self.keyboard[key.LEFT]:
-            self.focusX += 5
-            print(self.focusX)
-            self.scroller.set_focus(self.focusX, self.focusY)
+        x_direction = self.keyboard[key.RIGHT] - self.keyboard[key.LEFT]
+        y_direction = self.keyboard[key.UP] - self.keyboard[key.DOWN]
+
+        if x_direction:
+            self.focusX += x_direction * 20
+
+        if y_direction:
+            self.focusY += y_direction * 20
+
+        if x_direction or y_direction:
+            pass#self.scroller.set_focus(self.focusX, self.focusY)
 
         if self.keyboard[key.S]:
             self.buttonsProvider.exportToFile(self.walls)
@@ -175,5 +188,6 @@ class MouseInput(ScrollableLayer):
         leftClick = buttons == 1
         rightClick = buttons == 4
         self.position_x, self.position_y = director.get_virtual_coordinates(x, y)
+        print(self.position_x)
         if leftClick: self.addBrick(x, y)
         if rightClick: self.removeBrick(x, y)
