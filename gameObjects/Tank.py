@@ -26,8 +26,8 @@ class Tank:
     health = 100
 
     speed = 0
-    speed_acceleration = 0.1
-    max_speed = 2
+    speed_acceleration = 0.05
+    max_speed = 1.5
     rotation_speed = 1.2
     gun_rotation_speed = 1.2
 

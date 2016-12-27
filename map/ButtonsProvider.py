@@ -10,7 +10,14 @@ class ButtonsProvider:
                 'position': wall.position,
                 'scale': wall.scale,
                 'type': wall.type,
+                'src': wall.src,
             })
 
         with open('exportMap.json', 'w') as file_:
             file_.write(json.dumps(data))
+
+    def loadMap(self):
+        with open('exportMap.json', 'r') as f:
+             read_data = f.read()
+
+        return json.loads(read_data)

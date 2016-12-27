@@ -3,9 +3,10 @@ import cocos.collision_model as cm
 
 
 class ObjectProvider:
-    def __init__(self, keyboard, collision):
+    def __init__(self, keyboard, collision, rightPanelCollision):
         self.keyboard = keyboard
         self.collision = collision
+        self.rightPanelCollision = rightPanelCollision
 
     def checkIntersec(self, object):
         collisions = self.collision.objs_colliding(object)
@@ -15,9 +16,18 @@ class ObjectProvider:
 
         return False
 
+    def checkIntersecWithRightPanel(self, object):
+        collisions = self.rightPanelCollision.objs_colliding(object)
+
+        if collisions:
+            for collision in collisions:
+                return collision
+
+        return False
+
     def getFakeObject(self, position, width = 2, height = 2):
         obj = BatchableNode()
-        obj.cshape = cm.AARectShape(position,width // 2,height // 2)
+        obj.cshape = cm.AARectShape(position, width // 2,height // 2)
         return obj
 
     def getNearObject(self, x, y, objects):
@@ -46,5 +56,5 @@ class ObjectProvider:
         fakeObj = self.getFakeObject((x,y))
         collisions = self.collision.objs_colliding(fakeObj)
         if collisions:
-            for obj in objects:
-                if obj in collisions: return obj
+            for obj in collisions:
+                return obj

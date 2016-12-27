@@ -1,6 +1,8 @@
+from copy import copy
+
 import cocos
 from cocos.batch import BatchableNode, BatchNode
-from cocos.layer import Layer, director
+from cocos.layer import Layer, director, ScrollableLayer
 from cocos.text import Label
 import cocos.collision_model as cm
 from flask import json
@@ -9,21 +11,29 @@ from pyglet.window import key
 
 from ButtonsProvider import ButtonsProvider
 from ObjectProvider import ObjectProvider
+from sprites.destroyableObject import destroyableObject
 
 
-class MouseInput(Layer):
+class MouseInput(ScrollableLayer):
     is_event_handler = True
     walls = []
     labels = []
     collision = cm.CollisionManagerBruteForce()
+    rightPanelCollision = cm.CollisionManagerBruteForce()
+
+    focusX = 0
+    focusY = 0
+
+    currentSprite = None
 
     appendMode = 1
 
-    def __init__(self, keyboard):
+    def __init__(self, keyboard, scroller):
         super(MouseInput, self).__init__()
         self.keyboard = keyboard
+        self.scroller = scroller
         self.buttonsProvider = ButtonsProvider()
-        self.objectProvider = ObjectProvider(self.keyboard, self.collision)
+        self.objectProvider = ObjectProvider(self.keyboard, self.collision, self.rightPanelCollision)
 
         self.text = Label("mod1",
                           font_name='Helvetica',
@@ -31,33 +41,76 @@ class MouseInput(Layer):
                           anchor_x='left',  anchor_y='top'
                           )
 
-        # Then I just add the text!
-        #self.add(self.text)
-
         self.sublayer = BatchNode()
         self.rightPanel = []
-        for sprite in self.getRightPanel():
-            self.sublayer.add(sprite)
-            self.rightPanel.append(sprite)
         self.add(self.sublayer)
 
-    def getRightPanel(self):
-        x, y = director.get_window_size()
-        sprites = ['l0']
-        sp_obj = []
+        map = self.buttonsProvider.loadMap()
+        if map: self.loadMap(map)
 
+    def resize(self, width, height):
+        self.clearRightPanel()
+        for sprite in self.getRightPanel(width, height):
+            self.sublayer.add(sprite)
+            self.rightPanel.append(sprite)
+
+    def clearRightPanel(self):
+        for el in self.rightPanel:
+            self.sublayer.remove(el)
+            self.rightPanelCollision.remove_tricky(el)
+        self.rightPanel = []
+
+    def getRightPanel(self, x, y):
+        sprites = []
+        sp_obj = []
+        lastYPos = 0
+
+        for j in range(20):
+            for i in range(19):
+                sprites.append(str(j)+"x"+str(i)+".jpg")
+
+        count = 0
+        columns = 0
         for sprite in sprites:
-            sprite = cocos.sprite.Sprite('walls/' + sprite + '.png')
-            sprite.position = x - sprite.width / 2, y - sprite.height / 2
+            src = 'assets/' + sprite
+            sprite = cocos.sprite.Sprite(src)
+            sprite.src = src
+
+            lastYPos = sprite.height + lastYPos
+            lastXPos = x - sprite.width / 2 - 32 * columns
+            if count % 19 == 0:
+                columns += 1
+                lastYPos = 0
+            count += 1
+
+            sprite.position = lastXPos, lastYPos
+            sprite.cshape = cm.AARectShape(
+                sprite.position,
+                sprite.width // 2,
+                sprite.height // 2
+            )
+            self.rightPanelCollision.add(sprite)
             sp_obj.append(sprite)
 
         return sp_obj
 
+    def clickOnRightPanel(self, sprite):
+        self.currentSprite = sprite
+
+
     def addBrick(self, x, y):
-        sprite = cocos.sprite.Sprite('walls/l0.png')
-        sprite.type = 'brick1'
-        sprite.position = x, y
-        sprite.scale = 1
+        fakeObj = self.objectProvider.getFakeObject((x,y))
+        rightClickedBlock = self.objectProvider.checkIntersecWithRightPanel(fakeObj)
+        if rightClickedBlock:
+            return self.clickOnRightPanel(rightClickedBlock)
+
+        if not self.currentSprite: return
+
+        sprite = cocos.sprite.Sprite(self.currentSprite.src)
+        sprite.type = 'brick'
+        sprite.src = self.currentSprite.src
+        sprite.position = x // 32 * 32, y // 32 * 32
+        #sprite.position = x, y
 
         sprite.cshape = cm.AARectShape(
             sprite.position,
@@ -68,9 +121,9 @@ class MouseInput(Layer):
         if self.objectProvider.checkIntersec(sprite):
             return
 
-        nearWallPosition = self.objectProvider.getNearObject(x, y, self.walls)
-        if nearWallPosition:
-            sprite.position = nearWallPosition
+        # nearWallPosition = self.objectProvider.getNearObject(x, y, self.walls)
+        # if nearWallPosition:
+        #     sprite.position = nearWallPosition
 
 
         self.walls.append(sprite)
@@ -78,6 +131,11 @@ class MouseInput(Layer):
         self.collision.add(sprite)
 
     def checkButtons(self, dt):
+        if self.keyboard[key.LEFT]:
+            self.focusX += 5
+            print(self.focusX)
+            self.scroller.set_focus(self.focusX, self.focusY)
+
         if self.keyboard[key.S]:
             self.buttonsProvider.exportToFile(self.walls)
 
@@ -93,6 +151,15 @@ class MouseInput(Layer):
                     #if wall in self.collision: self.collision.objs.remove(wall)
 
 
+    def loadMap(self, map):
+        for block in map:
+            sprite = destroyableObject(block)
+            self.addSpriteToObjects(sprite)
+
+    def addSpriteToObjects(self, sprite):
+        self.walls.append(sprite)
+        self.add(sprite)
+        self.collision.add(sprite)
 
     def on_mouse_motion(self, x, y, dx, dy):
         pass
