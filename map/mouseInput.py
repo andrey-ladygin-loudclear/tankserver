@@ -11,7 +11,7 @@ from pyglet.window import key
 
 from ButtonsProvider import ButtonsProvider
 from ObjectProvider import ObjectProvider
-from sprites.destroyableObject import destroyableObject
+from SpriteFactory import SpriteFactory
 
 
 class MouseInput(ScrollableLayer):
@@ -25,6 +25,7 @@ class MouseInput(ScrollableLayer):
     focusX = 1500
     focusY = 500
 
+    currentType = 'background'
     currentSprite = None
 
     appendMode = 1
@@ -44,7 +45,7 @@ class MouseInput(ScrollableLayer):
         self.sublayer = cocos.layer.Layer()
         #self.sublayer = BatchNode()
         self.rightPanel = []
-        self.add(self.sublayer)
+        self.add(self.sublayer, z=2)
 
 
         for sprite in self.getRightPanel():
@@ -87,14 +88,7 @@ class MouseInput(ScrollableLayer):
 
         for sprite in sprites:
             src = 'assets/' + sprite
-            sprite = cocos.sprite.Sprite(src)
-            sprite.src = src
-            sprite.position = 0, 0
-            sprite.cshape = cm.AARectShape(
-                sprite.position,
-                sprite.width // 2,
-                sprite.height // 2
-            )
+            sprite = SpriteFactory.getSpriteByName(src)
             self.rightPanelCollision.add(sprite)
             sp_obj.append(sprite)
 
@@ -105,6 +99,12 @@ class MouseInput(ScrollableLayer):
 
 
     def addBrick(self, x, y):
+
+        # s = cocos.sprite.Sprite('assets/5x1.jpg')
+        # s.position = (x, y)
+        # self.sublayer.add(s)
+        # return
+
         fakeObj = self.objectProvider.getFakeObject((x,y))
         rightClickedBlock = self.objectProvider.checkIntersecWithRightPanel(fakeObj)
         if rightClickedBlock:
@@ -112,17 +112,12 @@ class MouseInput(ScrollableLayer):
 
         if not self.currentSprite: return
 
-        sprite = cocos.sprite.Sprite(self.currentSprite.src)
-        sprite.type = 'background'
-        sprite.src = self.currentSprite.src
+        sprite = SpriteFactory.getSpriteByName(self.currentSprite.src)
+        # sprite = cocos.sprite.Sprite(self.currentSprite.src)
+        # sprite.type = 'background'
+        # sprite.src = self.currentSprite.src
         sprite.position = x // 32 * 32, y // 32 * 32
         #sprite.position = x, y
-
-        sprite.cshape = cm.AARectShape(
-            sprite.position,
-            sprite.width // 2,
-            sprite.height // 2
-        )
 
         if self.objectProvider.checkIntersec(sprite):
             return
@@ -148,8 +143,11 @@ class MouseInput(ScrollableLayer):
 
         if x_direction or y_direction:
             w, h = cocos.director.director.get_window_size()
-            self.resize(w+self.focusX - 19*32/4, h+self.focusY - 20*32)
+            self.resize(w + self.focusX - 2032, h + self.focusY - 20*32)
             self.scroller.set_focus(self.focusX, self.focusY)
+
+        if self.keyboard[key.T]:
+            self.buttonsProvider.toggleDestoyableObjects(self.walls, self, self.collision)
 
         if self.keyboard[key.S]:
             self.buttonsProvider.exportToFile(self.walls)
@@ -168,8 +166,9 @@ class MouseInput(ScrollableLayer):
 
     def loadMap(self, map):
         for block in map:
-            sprite = destroyableObject(block)
-            self.addSpriteToObjects(sprite)
+            if block.get('src'):
+                sprite = SpriteFactory.getSpriteByName(block.get('src'), block.get('position'))
+                self.addSpriteToObjects(sprite)
 
     def addSpriteToObjects(self, sprite):
         self.walls.append(sprite)
@@ -189,16 +188,27 @@ class MouseInput(ScrollableLayer):
         #self.addBrick(x, y)
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        dx = - 936
+        dy = - 500
+        pos_x = x + self.focusX + dx
+        pos_y = y + self.focusY + dy
+
         leftClick = buttons == 1
         rightClick = buttons == 4
-        if leftClick: self.addBrick(x, y)
-        if rightClick: self.removeBrick(x, y)
+        if leftClick: self.addBrick(pos_x, pos_y)
+        if rightClick: self.removeBrick(pos_x, pos_y)
 
     def on_mouse_press(self, x, y, buttons, modifiers):
+        dx = - 936
+        dy = - 500
+
+        self.position_x, self.position_y = director.get_virtual_coordinates(x, y)
         leftClick = buttons == 1
         rightClick = buttons == 4
-        self.position_x, self.position_y = director.get_virtual_coordinates(x, y)
-        print(str(x) + ' -> ' + str(self.position_x))
-        if leftClick: self.addBrick(x, y)
-        if rightClick: self.removeBrick(x, y)
-        self.showBlockInfo(x, y)
+
+        pos_x = x + self.focusX + dx
+        pos_y = y + self.focusY + dy
+
+        if leftClick: self.addBrick(pos_x, pos_y)
+        if rightClick: self.removeBrick(pos_x, pos_y)
+        self.showBlockInfo(pos_x, pos_y)

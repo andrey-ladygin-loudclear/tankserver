@@ -13,7 +13,7 @@ for j in range(20):
         else:
             dx = 1 * i
 
-        if j == 0 or j == 19:
+        if j == 0 or j == 20:
             dy = 0
         else:
             dy = 1 * j
