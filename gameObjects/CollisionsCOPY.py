@@ -83,3 +83,19 @@ class Collisions:
         x4, y4 = (x - w//2 * scale) * sin_x, (y + h//2 * scale) * cos_x
 
         return ((x1, y1),(x2, y2),(x3, y3),(x4, y4))
+
+
+    @staticmethod
+    def getPointsFromDimensionsNEW(w, h, x, y, rotation = 0, scale = 1):
+        cos_x = math.cos(math.radians(rotation + 180))
+        sin_x = math.sin(math.radians(rotation + 180))
+        x1, y1 = (x - w//2 * scale) * sin_x, (y - h//2 * scale) * cos_x
+        x2, y2 = (x + w//2 * scale) * sin_x, (y - h//2 * scale) * cos_x
+        x3, y3 = (x + w//2 * scale) * sin_x, (y + h//2 * scale) * cos_x
+        x4, y4 = (x - w//2 * scale) * sin_x, (y + h//2 * scale) * cos_x
+
+        min_x = min(x1, x2, x3, x4)
+        min_y = min(y1, y2, y3, y4)
+        max_x = max(x1, x2, x3, x4)
+        max_y = max(y1, y2, y3, y4)
+        return (min_x, min_y,max_x, max_y)

@@ -7,7 +7,6 @@ from gameObjects.Explosion import Explosion
 from gameObjects.Map import Map
 
 from gameObjects.Tank import Tank
-from gameObjects.Wall import Wall
 from gameObjects.tanks.KVTank import KVTank
 
 
@@ -29,16 +28,14 @@ class Game:
             sleep(0.01)
 
     def update(self):
+        start_time = time()
         for player in Global.objects['players']:
             player.setNewPosition()
+        print("--- %s seconds ---" % (time() - start_time))
 
         for bullet in Global.objects['bullets']:
             bullet.update()
-            bullet.cshape = cm.AARectShape(
-                bullet.position,
-                2,
-                2
-            )
+            bullet.cshape = cm.AARectShape(bullet.position, 2, 2)
 
             if Collisions.checkWithWalls(bullet) or Collisions.checkWithObjects(bullet, bullet.parent_id) or bullet.exceededTheLengthLimit():
                 explosion = Explosion(bullet)

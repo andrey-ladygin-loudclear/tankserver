@@ -1,16 +1,19 @@
 import math
 
 import Global
+import cocos.collision_model as cm
 
 
-class Wall():
+class LandingObject():
     id = 0
-    health = 20
+    health = 80
     position = (0, 0)
 
     width = 32
     height = 32
     scale = 1
+
+    type = ''
 
     def damage(self, bullet):
         x, y = self.position
@@ -42,10 +45,18 @@ class Wall():
 
         return ((x1, y1),(x2, y2),(x3, y3),(x4, y4))
 
+    def set_position(self, pos):
+        self.position = pos
+        self.cshape = cm.AARectShape(
+            self.position,
+            self.width // 2,
+            self.height // 2
+        )
+
     def getObjectFromSelf(self):
         return {
             'action': Global.NetworkActions.UPDATE,
             Global.NetworkDataCodes.ID: self.id,
             Global.NetworkDataCodes.POSITION: self.position,
-            Global.NetworkDataCodes.TYPE: Global.NetworkDataCodes.WALL
+            Global.NetworkDataCodes.TYPE: self.type
         }
