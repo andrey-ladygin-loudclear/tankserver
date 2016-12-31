@@ -40,6 +40,7 @@ class NetworkDataCodes:
     PARENT_ID = 'pi'
 
     KVTank = 'k'
+    ETank = 'e'
     PLAYER = 'p'
     TANK = 't'
     BULLET = 'b'

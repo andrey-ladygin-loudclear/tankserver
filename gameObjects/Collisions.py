@@ -43,8 +43,27 @@ class Collisions:
         for wall in Global.objects['walls']:
             wall_points = wall.getPoints()
 
-            if Collisions.intersection(object_points, wall_points):
-                return True
+            if Collisions.wallNearObject(object_points, wall_points):
+                if Collisions.intersection(object_points, wall_points):
+                    return True
+
+    @staticmethod
+    def wallNearObject(object_points, wall_points):
+        return True
+        dx = 64
+        o_x_coords = []
+        o_y_coords = []
+        w_x_coords = []
+        w_y_coords = []
+
+        for point in object_points:
+            o_x_coords.append(point[0])
+            o_y_coords.append(point[1])
+
+        for point in wall_points:
+            w_x_coords.append(point[0])
+            w_y_coords.append(point[1])
+
 
     @staticmethod
     def intersection(object1, object2):

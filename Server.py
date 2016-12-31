@@ -24,6 +24,8 @@ thread.start()
 # thread.setDaemon(True)
 # thread.start()
 
+#Global.game.addBot()
+
 thread = Thread(target = Global.game.callUpdate, args=(3, ))
 thread.setDaemon(True)
 thread.start()

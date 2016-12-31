@@ -22,6 +22,13 @@ class Game:
 
         return walls
 
+    def addBot(self):
+        tank = KVTank()
+        tank.id = self.getNextId()
+        tank.position = self.getPlayerPosition()
+        Global.objects['players'].append(tank)
+        Global.collision_manager.add(tank)
+
     def callUpdate(self, n):
         while True:
             self.update()
