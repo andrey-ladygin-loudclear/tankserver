@@ -8,7 +8,7 @@ class EmulatePlayer():
 
 class ClientChannel(Channel):
     def Network(self, data):
-        # print(data)
+        #print(data)
 
         if data.get('action') == Global.NetworkActions.TANK_MOVE:
             for player in Global.objects['players']:

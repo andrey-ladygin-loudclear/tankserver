@@ -17,13 +17,14 @@ class Tank:
     rotation = 0
     gun_rotation = 0
     position = (0, 0)
+    prevPosition = (0, 0)
     parent_id = 0
 
     width = 0
     height = 0
     scale = 1
 
-    health = 100
+    health = 1000
 
     speed = 0
     speed_acceleration = 0.05
@@ -59,16 +60,19 @@ class Tank:
         return (self.speed * sin_x + x, self.speed * cos_x + y)
 
     def setNewPosition(self):
-        x, y = self.position
+        self.prevPosition = self.position
         self.position = self.getNewPosition()
         self.cshape = cm.AARectShape(self.position, self.width//2, self.height//2)
 
         #if Collisions.checkWithWalls(self):
         if Collisions.checkManualCollisionsWidthWalls(self):
-            self.position = (x, y)
+            self.position = self.prevPosition
 
         self.reduceSpeed()
         self.client_change_speed = False
+
+    def checkIfPositionChanged(self):
+        return self.position == self.prevPosition
 
     def reduceSpeed(self):
         if not self.client_change_speed:

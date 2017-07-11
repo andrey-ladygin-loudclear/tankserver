@@ -34,6 +34,7 @@ class NetworkDataCodes:
     ANGLE_OF_DEFLECTION = 'aod'
     ROTATION = 'r'
     TYPE = 'y'
+    SRC = 's'
     ID = 'i'
     HEALTH = 'h'
     DAMAGE = 'd'

@@ -38,7 +38,7 @@ class Game:
         start_time = time()
         for player in Global.objects['players']:
             player.setNewPosition()
-        print("--- %s seconds ---" % (time() - start_time))
+        #print("--- %s seconds ---" % (time() - start_time))
 
         for bullet in Global.objects['bullets']:
             bullet.update()
@@ -54,6 +54,7 @@ class Game:
                 wall.destroy()
 
         for player in Global.objects['players']:
+            #if player.checkIfPositionChanged():
             Global.Queue.append(player.getObjectFromSelf())
 
     def addEvent(self, event):

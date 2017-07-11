@@ -26,9 +26,12 @@ class Network(Server):
 
         channel.Send({
             'action': Global.NetworkActions.INIT,
-            'walls': Global.game.wallsObjects(),
             'id': id
-            #'id': channel.id
+        })
+
+        channel.Send({
+            'action': Global.NetworkActions.INIT,
+            'walls': Global.game.wallsObjects(),
         })
 
     def sendDataToClients(self, channel):

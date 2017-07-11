@@ -14,6 +14,7 @@ class LandingObject():
     scale = 1
 
     type = ''
+    src = ''
 
     def damage(self, bullet):
         x, y = self.position
@@ -58,5 +59,6 @@ class LandingObject():
             'action': Global.NetworkActions.UPDATE,
             Global.NetworkDataCodes.ID: self.id,
             Global.NetworkDataCodes.POSITION: self.position,
-            Global.NetworkDataCodes.TYPE: self.type
+            Global.NetworkDataCodes.TYPE: self.type,
+            Global.NetworkDataCodes.SRC: self.src
         }
