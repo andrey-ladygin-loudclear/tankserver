@@ -26,9 +26,20 @@ thread.start()
 
 #Global.game.addBot()
 
-thread = Thread(target = Global.game.callUpdate, args=(3, ))
+thread = Thread(target = Global.game.callUpdatePositions)
 thread.setDaemon(True)
 thread.start()
+
+thread = Thread(target = Global.game.callCheckCollisions)
+thread.setDaemon(True)
+thread.start()
+
+# thread = Thread(target = Global.game.callUpdateBots)
+# thread.setDaemon(True)
+# thread.start()
+
+Global.game.addBot()
+Global.game.addBot()
 
 while True:
     connections_listener.Pump()

@@ -58,4 +58,5 @@ class NetworkActions:
     DESTROY = '5'
     TEST = '6'
     DAMAGE = '7'
+    UPDATE_BATCH = '8'
 

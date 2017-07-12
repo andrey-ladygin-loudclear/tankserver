@@ -8,7 +8,7 @@ from gameObjects.Bullet import Bullet
 class StandartBullet(Bullet):
 
     scale = 0.8
-    damage = 1
+    damage = 2
     damageRadius = 5
     fireLength = 1000
 

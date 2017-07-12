@@ -7,7 +7,7 @@ import Global
 class HeavyBullet(Bullet):
 
     scale = 1
-    damage = 20
+    damage = 40
     damageRadius = 80
     fireLength = 1000
 

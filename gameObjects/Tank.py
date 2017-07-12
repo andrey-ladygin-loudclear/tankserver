@@ -24,13 +24,20 @@ class Tank:
     height = 0
     scale = 1
 
-    health = 1000
+    health = 100
+
+    # speed = 0
+    # speed_acceleration = 0.05
+    # max_speed = 1.5
+    # rotation_speed = 1.2
+    # gun_rotation_speed = 1.2
+
 
     speed = 0
-    speed_acceleration = 0.05
-    max_speed = 1.5
+    speed_acceleration = 0.1
+    max_speed = 1.8
     rotation_speed = 1.2
-    gun_rotation_speed = 1.2
+    gun_rotation_speed = 1.4
 
     gun_rotation_offset = 0
 
@@ -48,9 +55,12 @@ class Tank:
         }
 
     def update(self, object):
-        self.increaseSpeed(object.get('mov'))
-        self.setGunRotation(object.get('gun_turn'))
-        self.setTankRotation(object.get('turn'), object.get('mov'))
+        self.move(object.get('mov'), object.get('turn'), object.get('gun_turn'))
+
+    def move(self, move, rotation, gun_rotation):
+        self.increaseSpeed(move)
+        self.setGunRotation(gun_rotation)
+        self.setTankRotation(rotation, move)
 
     def getNewPosition(self):
         x, y = self.position
@@ -71,8 +81,8 @@ class Tank:
         self.reduceSpeed()
         self.client_change_speed = False
 
-    def checkIfPositionChanged(self):
-        return self.position == self.prevPosition
+    def checkIfStateChanged(self):
+        return self.position != self.prevPosition
 
     def reduceSpeed(self):
         if not self.client_change_speed:
