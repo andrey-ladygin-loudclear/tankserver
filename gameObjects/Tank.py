@@ -176,9 +176,10 @@ class Tank:
         delta = (deltax + deltay)
         range = math.sqrt(delta)
         range = range - (self.width + self.height) * self.scale / 2
-        range = max(range / 4, 1)
+        #range = max(range / 4, 1)
 
-        dmg = bullet.damage - math.pow((( -2 * bullet.damageRadius / math.pow(bullet.damageRadius, 2) ) * math.pi * range), 2)
+        #dmg = bullet.damage - math.pow((( -2 * bullet.damageRadius / math.pow(bullet.damageRadius, 2) ) * math.pi * range), 2)
+        dmg = bullet.damage * self.damageKoef(range)
         print('range: ' + str(range))
         print('damage (without rand): ' + str(dmg))
         dmg += random.randrange(-bullet.damage / 10, bullet.damage / 10)
@@ -192,3 +193,12 @@ class Tank:
             Global.NetworkDataCodes.HEALTH: self.health,
             Global.NetworkDataCodes.DAMAGE: dmg
         })
+
+    def damageKoef(self, range):
+        maxRange = 20
+
+        try:
+            v = math.log(-1 * range + maxRange, 1.22) + 5
+        except ValueError:
+            v = 0
+        return v / maxRange
