@@ -122,15 +122,20 @@ class Game:
             Global.Queue.append(player.getObjectFromSelf())
 
     def callSendDataToPlayers(self):
+        updatePerSecond = 40
+
         while True:
-            data = Global.Queue
+            data = {
+                'action': 'update',
+                'data': Global.Queue
+            }
+
             Global.Queue = []
 
-            for obj in data:
-                for channel in Global.PullConnsctions:
-                    channel.Send(obj)
+            for channel in Global.PullConnsctions:
+                channel.Send(data)
 
-            sleep(0.01)
+            sleep(1.0/updatePerSecond)
 
 
     # def callSendDataToPlayers(self):

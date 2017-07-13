@@ -34,6 +34,16 @@ class Network(Server):
             'walls': Global.game.wallsObjects(),
         })
 
+        # Global.Queue.append({
+        #     'action': Global.NetworkActions.INIT,
+        #     'id': id
+        # })
+        #
+        # Global.Queue.append({
+        #     'action': Global.NetworkActions.INIT,
+        #     'walls': Global.game.wallsObjects(),
+        # })
+
     def sendDataToClients(self, channel):
         pass
         while True:

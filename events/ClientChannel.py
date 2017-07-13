@@ -1,3 +1,5 @@
+from time import sleep
+
 from PodSixNet.Channel import Channel
 from cocos import sprite
 import cocos.collision_model as cm
@@ -9,13 +11,13 @@ class EmulatePlayer():
 class ClientChannel(Channel):
     def Network(self, data):
         #print(data)
+        #sleep(.02)
 
         if data.get('action') == Global.NetworkActions.TANK_MOVE:
             for player in Global.objects['players']:
                 if player.id == data.get('id'):
                     player.update(data)
                     break
-
 
         if data.get('action') == Global.NetworkActions.TANK_FIRE:
             for player in Global.objects['players']:
