@@ -1,11 +1,14 @@
 import math
-from threading import Thread
+from threading import Thread, Timer
 
 import time
 from cocos import actions
 from pyglet.window import key
 
 import Global
+from gameObjects.Tank import Tank
+from gameObjects.bullets.HeavyBullet import HeavyBullet
+from gameObjects.bullets.StandartBullet import StandartBullet
 
 
 class BotTankMovingHandlers(Thread):
@@ -14,7 +17,7 @@ class BotTankMovingHandlers(Thread):
 
     rotation_angle = 30
 
-    target = None
+    target = None # type: Tank
 
     def __init__(self, target):
         Thread.__init__(self)
@@ -45,14 +48,18 @@ class BotTankMovingHandlers(Thread):
             shortest_player = self.getPlayerByShortestDistanse()
 
             if shortest_player:
+                angleToPlayer = self.getAngleWithPlayer(shortest_player)
                 self.rotateGunToPlayer(shortest_player)
 
                 if self.target.rotation != self.rotation_angle:
                     self.rotateToAngle(self.rotation_angle)
 
-            #self.target.fire()
+                if abs(self.target.gun_rotation - angleToPlayer) < 10:
+                    self.fire()
 
-            #self.target.heavy_fire()
+                if abs(self.target.gun_rotation - angleToPlayer) < 5:
+                    self.heavy_fire()
+
             time.sleep(0.05)
             #time.sleep(0.5)
 
@@ -89,6 +96,8 @@ class BotTankMovingHandlers(Thread):
         shortest_player = None
 
         for player in Global.objects['players']:
+            #if player.bot: continue
+
             distanse = self.getDistanceByPlayer(player)
 
             if not shortest_distanse:
@@ -119,3 +128,61 @@ class BotTankMovingHandlers(Thread):
         return rad * (180 / math.pi) + 180
         if degrees < 0: degrees += 360
         return degrees
+
+    canHeavyFire = True
+
+    def heavy_fire(self):
+        if self.canHeavyFire:
+            self.canHeavyFire = False
+
+            bullet = HeavyBullet()
+            bullet.rotation = self.target.gun_rotation
+            bullet.position = self.target.position
+
+            bullet.start_position = bullet.position
+            bullet.parent_id = self.target.id
+            bullet.id = Global.game.getNextId()
+            Global.Queue.append(bullet.getObjectFromSelf())
+            Global.objects['bullets'].append(bullet)
+
+            t = Timer(self.heavyBulletFreezTime, self.acceptHeavyFire)
+            t.start()
+
+    canFire = True
+    bulletsHolder = 30
+    def fire(self):
+        if self.canFire:
+            self.canFire = False
+            self.bulletsHolder -= 1
+
+            bullet = StandartBullet()
+            bullet.rotation = self.target.gun_rotation
+            bullet.position = self.target.position
+            # bullet.rotation = self.target.Gun.getRotation() + self.target.Gun.getStandartGunAngleDeflection()
+            # bullet.position = self.target.Gun.standartFirePosition()
+
+            bullet.start_position = bullet.position
+            bullet.parent_id = self.target.id
+            bullet.id = Global.game.getNextId()
+            Global.Queue.append(bullet.getObjectFromSelf())
+            Global.objects['bullets'].append(bullet)
+
+            if not self.bulletsHolder:
+                t = Timer(3, self.bulletsHolderReload)
+                t.start()
+                return
+
+            t = Timer(self.bulletFreezTime, self.acceptFire)
+            t.start()
+
+    bulletFreezTime = 0.1
+    heavyBulletFreezTime = 3
+
+    def bulletsHolderReload(self):
+        self.canFire = True
+        self.bulletsHolder = 30
+
+    def acceptFire(self):
+        self.canFire = True
+    def acceptHeavyFire(self):
+        self.canHeavyFire = True
