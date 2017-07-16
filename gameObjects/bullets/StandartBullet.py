@@ -10,7 +10,7 @@ class StandartBullet(Bullet):
     scale = 0.8
     damage = 2
     damageRadius = 5
-    fireLength = 1000
+    fireLength = 400
 
     speed = 400
 

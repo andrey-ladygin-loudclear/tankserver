@@ -1,4 +1,5 @@
 import math
+import random
 from threading import Thread, Timer
 
 import time
@@ -29,7 +30,7 @@ class BotTankMovingHandlers(Thread):
             #print 'bot moving'
             #print self.target.id, self.target.position
 
-            moving_directions = 1
+            moving_directions = 0
             tank_rotate = 1
 
 
@@ -45,7 +46,7 @@ class BotTankMovingHandlers(Thread):
             #self.setGunPosition()
 
             # Set the object's rotation
-            shortest_player = self.getPlayerByShortestDistanse()
+            shortest_player, shortest_distanse = self.getPlayerByShortestDistanse()
 
             if shortest_player:
                 angleToPlayer = self.getAngleWithPlayer(shortest_player)
@@ -54,11 +55,12 @@ class BotTankMovingHandlers(Thread):
                 if self.target.rotation != self.rotation_angle:
                     self.rotateToAngle(self.rotation_angle)
 
-                if abs(self.target.gun_rotation - angleToPlayer) < 10:
-                    self.fire()
+                if shortest_distanse < 800:
+                    if abs(self.target.gun_rotation - angleToPlayer) < 10:
+                        self.fire()
 
-                if abs(self.target.gun_rotation - angleToPlayer) < 5:
-                    self.heavy_fire()
+                    if abs(self.target.gun_rotation - angleToPlayer) < 5:
+                        self.heavy_fire()
 
             time.sleep(0.05)
             #time.sleep(0.5)
@@ -96,7 +98,7 @@ class BotTankMovingHandlers(Thread):
         shortest_player = None
 
         for player in Global.objects['players']:
-            #if player.bot: continue
+            if player.bot: continue
 
             distanse = self.getDistanceByPlayer(player)
 
@@ -108,7 +110,7 @@ class BotTankMovingHandlers(Thread):
                 shortest_distanse = distanse
                 shortest_player = player
 
-        return shortest_player
+        return shortest_player, shortest_distanse
 
     def getDistanceByPlayer(self, player):
         x1, y1 = self.target.position
@@ -136,7 +138,7 @@ class BotTankMovingHandlers(Thread):
             self.canHeavyFire = False
 
             bullet = HeavyBullet()
-            bullet.rotation = self.target.gun_rotation
+            bullet.rotation = self.target.gun_rotation - 90 + self.getHeavyGunAngleDeflection()
             bullet.position = self.target.position
 
             bullet.start_position = bullet.position
@@ -149,14 +151,14 @@ class BotTankMovingHandlers(Thread):
             t.start()
 
     canFire = True
-    bulletsHolder = 30
+    bulletsHolder = 10
     def fire(self):
         if self.canFire:
             self.canFire = False
             self.bulletsHolder -= 1
 
             bullet = StandartBullet()
-            bullet.rotation = self.target.gun_rotation
+            bullet.rotation = self.target.gun_rotation - 90 + self.getStandartGunAngleDeflection()
             bullet.position = self.target.position
             # bullet.rotation = self.target.Gun.getRotation() + self.target.Gun.getStandartGunAngleDeflection()
             # bullet.position = self.target.Gun.standartFirePosition()
@@ -180,9 +182,17 @@ class BotTankMovingHandlers(Thread):
 
     def bulletsHolderReload(self):
         self.canFire = True
-        self.bulletsHolder = 30
+        self.bulletsHolder = 10
 
     def acceptFire(self):
         self.canFire = True
+
     def acceptHeavyFire(self):
         self.canHeavyFire = True
+
+
+    def getHeavyGunAngleDeflection(self):
+        return random.randrange(-200, 200) / 100
+
+    def getStandartGunAngleDeflection(self):
+        return random.randrange(-500, 500) / 100

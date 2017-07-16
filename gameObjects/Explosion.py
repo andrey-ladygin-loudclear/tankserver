@@ -3,6 +3,7 @@ import cocos.euclid as eu
 
 import Global
 from gameObjects.Collisions import Collisions
+from gameObjects.landing import destroyableObject
 
 
 class Explosion():
@@ -31,8 +32,9 @@ class Explosion():
 
         if damage_collisions:
             for damage_wall in Global.objects['walls']:
-                if damage_wall in damage_collisions:
-                    damage_wall.damage(self.bullet)
+                if damage_wall.type == 'destroyable':
+                    if damage_wall in damage_collisions:
+                        damage_wall.damage(self.bullet)
 
             for player in Global.objects['players']:
                 if player in damage_collisions:

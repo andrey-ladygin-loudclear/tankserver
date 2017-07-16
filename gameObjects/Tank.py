@@ -19,6 +19,7 @@ class Tank:
     position = (0, 0)
     prevPosition = (0, 0)
     parent_id = 0
+    bot = False
 
     width = 0
     height = 0
@@ -35,7 +36,8 @@ class Tank:
 
     speed = 0
     speed_acceleration = 0.1
-    max_speed = 1.8
+    #max_speed = 1.8
+    max_speed = 2.8
     rotation_speed = 1.2
     gun_rotation_speed = 1.4
 
@@ -44,12 +46,16 @@ class Tank:
     client_change_speed = False
 
     def getObjectFromSelf(self):
+        x, y = self.position
+        r = self.rotation
+        gr = self.gun_rotation
+
         return {
             'action': Global.NetworkActions.UPDATE,
             Global.NetworkDataCodes.ID: self.id,
-            Global.NetworkDataCodes.POSITION: self.position,
-            Global.NetworkDataCodes.ROTATION: self.rotation,
-            Global.NetworkDataCodes.GUN_ROTATION: self.gun_rotation,
+            Global.NetworkDataCodes.POSITION: (int(x), int(y)),
+            Global.NetworkDataCodes.ROTATION: int(r),
+            Global.NetworkDataCodes.GUN_ROTATION: int(gr),
             Global.NetworkDataCodes.FRACTION: self.fraction,
             Global.NetworkDataCodes.TYPE: self.tankClass,
         }
@@ -180,8 +186,8 @@ class Tank:
 
         #dmg = bullet.damage - math.pow((( -2 * bullet.damageRadius / math.pow(bullet.damageRadius, 2) ) * math.pi * range), 2)
         dmg = bullet.damage * self.damageKoef(range)
-        print('range: ' + str(range))
-        print('damage (without rand): ' + str(dmg))
+        #print('range: ' + str(range))
+        #print('damage (without rand): ' + str(dmg))
         dmg += random.randrange(-bullet.damage / 10, bullet.damage / 10)
 
         self.health -= dmg

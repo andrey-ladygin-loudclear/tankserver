@@ -3,7 +3,9 @@ from time import sleep
 import cocos.collision_model as cm
 
 from events.Game import Game
+from helpers.ObjectsManager import ObjectsManager
 
+objectsManager = ObjectsManager()
 
 def init():
     global objects, collision_manager, server, game, PullConnsctions, PullBulletsConnections, Queue

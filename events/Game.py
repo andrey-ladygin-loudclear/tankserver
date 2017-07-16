@@ -28,6 +28,7 @@ class Game:
     def addBot(self):
         tank = ETank()
         tank.id = self.getNextId()
+        tank.bot = True
         tank.position = (random.randrange(1, 1000), random.randrange(1, 1000))#random.choice([(500, 500), (1200, 1000), (700, 1500), (1200, 500)])
 
         moving_handler = BotTankMovingHandlers(tank)

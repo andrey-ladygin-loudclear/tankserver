@@ -72,9 +72,10 @@ class MouseInput(ScrollableLayer):
     def resizeMap(self):
         col = 0
         row = 0
+        offset = 2
         for land in self.palitraObject:
-            x = land.width * .5 + land.width * col + 2 - self.currentWidth // 2
-            y = land.height * .5 + land.height * row + 2 - self.currentHeight // 2
+            x = land.width * .5 + land.width * col + offset - self.currentWidth // 2
+            y = land.height * .5 + land.height * row + offset - self.currentHeight // 2
             col += 1
             if col > 20:
                 row += 1
