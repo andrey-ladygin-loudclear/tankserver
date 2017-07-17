@@ -1,4 +1,5 @@
 from flask import json
+from simplejson import JSONDecodeError
 
 from sprites.destroyableObject import destroyableObject
 
@@ -19,10 +20,20 @@ class ButtonsProvider:
             file_.write(json.dumps(data))
 
     def getMap(self):
-        with open('exportMap.json', 'r') as f:
-             read_data = f.read()
+        try:
+            with open('exportMap.json', 'r') as f:
+                 read_data = f.read()
 
-        return json.loads(read_data)
+            return json.loads(read_data)
+        except Exception:
+            pass
+
+        return [{
+            'src': 'backgrounds/fill.png',
+            'position': [0,0],
+            'type': 0,
+        }]
+
 
     def toggleDestoyableObjects(self, walls, layer, collision):
         for wall in walls:
