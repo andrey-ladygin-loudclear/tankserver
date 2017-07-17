@@ -82,12 +82,11 @@ class MouseInput(ScrollableLayer):
 
         for file in imgs:
             land = sprite.Sprite(file)
-            land.cshape = cm.AARectShape(land.position,land.width//2,land.height//2)
+            land.cshape = cm.AARectShape(land.position, land.width//2, land.height//2)
             land.src = file
             self.palitra.add(land)
             self.palitraObject.append(land)
             self.palitraCollision.add(land)
-
 
     def resizeMap(self):
         col = 0
@@ -102,7 +101,6 @@ class MouseInput(ScrollableLayer):
                 col = 0
             land.position = (x, y)
             land.cshape = cm.AARectShape(land.position,land.width//2,land.height//2)
-
 
     def checkButtons(self, dt):
         x_direction = self.keyboard[key.LEFT] - self.keyboard[key.RIGHT]

@@ -12,7 +12,7 @@ class Map:
     walls = []
 
     def get_map(self):
-        with open('map/exportMap.json', 'r') as f:
+        with open('map2/exportMap.json', 'r') as f:
             read_data = f.read()
 
         return json.loads(read_data)
@@ -25,13 +25,16 @@ class Map:
 
         for object in map:
 
-            if object.get('type') == 'decoration':
+            if object.get('type') == 3:
                 wall = decorationObject()
 
-            if object.get('type') == 'destroyable':
+            if object.get('type') == 2:
                 wall = destroyableObject()
 
-            if object.get('type') == 'background':
+            if object.get('type') == 1:
+                wall = backgroundObject()
+
+            if object.get('type') == 0:
                 wall = backgroundObject()
 
             wall.id = Global.game.getNextId()
