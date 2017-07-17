@@ -1,4 +1,3 @@
-import glob
 import os
 from time import sleep
 
@@ -9,6 +8,7 @@ from cocos.text import Label
 import cocos.collision_model as cm
 
 from pyglet.window import key
+from scandir import scandir
 
 from ObjectProvider import ObjectProvider
 from ButtonsProvider import ButtonsProvider
@@ -78,12 +78,15 @@ class MouseInput(ScrollableLayer):
                 self.collision.add(spriteObj)
 
     def loadPalitra(self):
-        imgs = sorted(glob.glob('assets/*'))
+        #imgs = sorted(glob.glob('assets/*'))
+        imgs = sorted(scandir('assets'))
 
         for file in imgs:
-            land = sprite.Sprite(file)
+            src = 'assets/' + str(file.name)
+
+            land = sprite.Sprite(src)
             land.cshape = cm.AARectShape(land.position, land.width//2, land.height//2)
-            land.src = file
+            land.src = src
             self.palitra.add(land)
             self.palitraObject.append(land)
             self.palitraCollision.add(land)
