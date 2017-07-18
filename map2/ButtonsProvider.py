@@ -8,9 +8,21 @@ class ButtonsProvider:
 
     def exportToFile(self, walls):
         data = []
+
+        minx = 0
+        miny = 0
+
         for wall in walls:
+            x, y = wall.position
+            minx = min(x, minx)
+            miny = min(y, miny)
+
+
+        for wall in walls:
+            x, y = wall.position
+
             data.append({
-                'position': wall.position,
+                'position': (x + abs(minx), y + abs(miny)),
                 'scale': wall.scale,
                 'type': wall.type,
                 'src': wall.src,
