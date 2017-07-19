@@ -14,7 +14,7 @@ class LandingObject():
     height = 32
     scale = 1
 
-    type = ''
+    type = 0
     src = ''
 
     def damage(self, bullet):

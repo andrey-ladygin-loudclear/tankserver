@@ -23,11 +23,13 @@ class Game:
 
         return walls
 
-    def addBot(self):
+    def addBot(self, position=(0,0), clan=0):
         tank = Tank()
         tank.id = self.getNextId()
         tank.bot = True
-        tank.position = (random.randrange(1, 1000), random.randrange(1, 1000))#random.choice([(500, 500), (1200, 1000), (700, 1500), (1200, 500)])
+        tank.position = position
+        tank.clan = clan
+        tank.gun_rotation = random.randrange(1, 360)
 
         moving_handler = BotTankMovingHandlers(tank)
         moving_handler.setDaemon(True)
@@ -42,6 +44,7 @@ class Game:
     def addPlayer(self):
         tank = Tank()
         tank.id = self.getNextId()
+        tank.clan = 1
         tank.position = self.getPlayerPosition()
         Global.GameObjects.addTank(tank)
         self.sendAllTanksToClients()

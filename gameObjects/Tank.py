@@ -11,39 +11,40 @@ from helper import Global
 
 
 class Tank:
-    id = 0
-    tankClass = ''
-    fraction = ''
-    rotation = 0
-    gun_rotation = 0
-    position = (0, 0)
-    prevPosition = (0, 0)
-    parent_id = 0
     bot = False
 
-    width = 0
-    height = 0
-    scale = 1
+    Gun = None
+    gun_rotation = 0
+    id = 0
 
-    health = 100
+    speed = 20
 
-    # speed = 0
-    # speed_acceleration = 0.05
-    # max_speed = 1.5
-    # rotation_speed = 1.2
-    # gun_rotation_speed = 1.2
+    old_position = (0, 0)
+    velocity = (0, 0)
+
+    maxBulletsHolder = 10
+    bulletsHolder = 10
+    timeForBulletsHolderReload = 3
+
+    #def __init__(self):
+        #self.Gun = Gun(self)
+
+    #
+    # def _update_position(self):
+    #     super(Tank, self)._update_position()
+    #     self.Gun.position = self.position
+    #     self.Gun.rotation = self.rotation + self.gun_rotation
+    #
+    #     # self.rotation = 180
+    #     # self.Gun.position = self.position
+    #     # self.Gun.rotation = self.rotation + self.Gun.gun_rotation
 
 
-    speed = 0
-    speed_acceleration = 0.1
-    #max_speed = 1.8
-    max_speed = 2.8
-    rotation_speed = 1.2
-    gun_rotation_speed = 1.4
+    def heavy_fire(self):
+        self.Gun.fireFirstWeapon()
 
-    gun_rotation_offset = 0
-
-    client_change_speed = False
+    def fire(self):
+        self.Gun.fireSecondWeapon()
 
     def getObjectFromSelf(self):
         x, y = self.position
@@ -60,106 +61,8 @@ class Tank:
             Global.NetworkDataCodes.TYPE: self.tankClass,
         }
 
-    def update(self, object):
-        self.position = object.get('position')
-        self.rotation = object.get('rotation')
-        self.gun_rotation = object.get('gun_rotation')
-
-    def move(self, move, rotation, gun_rotation):
-        self.increaseSpeed(move)
-        self.setGunRotation(gun_rotation)
-        self.setTankRotation(rotation, move)
-
-    def getNewPosition(self):
-        x, y = self.position
-        tank_rotation = self.rotation
-        cos_x = math.cos(math.radians(tank_rotation + 180))
-        sin_x = math.sin(math.radians(tank_rotation + 180))
-        return (self.speed * sin_x + x, self.speed * cos_x + y)
-
-    def setNewPosition(self):
-        self.prevPosition = self.position
-        self.position = self.getNewPosition()
-        self.cshape = cm.AARectShape(self.position, self.width//2, self.height//2)
-
-        #if Collisions.checkWithWalls(self):
-        if Collisions.checkManualCollisionsWidthWalls(self):
-            self.position = self.prevPosition
-
-        self.reduceSpeed()
-        self.client_change_speed = False
-
-    def checkIfStateChanged(self):
-        return self.position != self.prevPosition
-
-    def reduceSpeed(self):
-        if not self.client_change_speed:
-            if abs(self.speed - self.speed_acceleration) < self.speed_acceleration:
-                self.speed = 0
-
-            if self.speed > 0:
-                self.speed = self.speed - self.speed_acceleration
-            elif self.speed < 0:
-                self.speed = self.speed + self.speed_acceleration
-
-    def increaseSpeed(self, moving_directions):
-        if moving_directions:
-            self.client_change_speed = True
-            speed = self.speed + self.speed_acceleration * moving_directions
-
-            if abs(speed) < self.max_speed:
-                self.speed = speed
-
-    def setTankRotation(self, turns_direction, moving_directions):
-        self.rotation = self.getTankRotation(turns_direction, moving_directions)
-
-    def getTankRotation(self, turns_direction, moving_directions):
-        tank_rotate = self.rotation_speed * turns_direction
-
-        if moving_directions:
-            tank_rotate *= moving_directions
-
-        return self.rotation + tank_rotate
-
-    def getPoints(self):
-        rotation = abs(self.rotation % 360)
-
-        x, y = self.position
-        w, h = (self.width * self.scale, self.height * self.scale)
-        cos_x = math.cos(math.radians(rotation))
-        sin_x = math.sin(math.radians(rotation))
-
-        x1, y1 = x - w//2, y - h//2
-        x2, y2 = x + w//2, y - h//2
-        x3, y3 = x + w//2, y + h//2
-        x4, y4 = x - w//2, y + h//2
-
-        if rotation > 270:
-            x1, y1 = x1 + h//2 * sin_x, y1 - w//2 * cos_x
-            x2, y2 = x2 - h//2 * sin_x, y2 - w//2 * cos_x
-            x3, y3 = x3 - h//2 * sin_x, y3 + w//2 * cos_x
-            x4, y4 = x4 + h//2 * sin_x, y4 + w//2 * cos_x
-        elif rotation > 180:
-            x1, y1 = x1 + h//2 * sin_x, y1 + w//2 * cos_x
-            x2, y2 = x2 - h//2 * sin_x, y2 + w//2 * cos_x
-            x3, y3 = x3 - h//2 * sin_x, y3 - w//2 * cos_x
-            x4, y4 = x4 + h//2 * sin_x, y4 - w//2 * cos_x
-        elif rotation > 90:
-            x1, y1 = x1 - h//2 * sin_x, y1 + w//2 * cos_x
-            x2, y2 = x2 + h//2 * sin_x, y2 + w//2 * cos_x
-            x3, y3 = x3 + h//2 * sin_x, y3 - w//2 * cos_x
-            x4, y4 = x4 - h//2 * sin_x, y4 - w//2 * cos_x
-        else:
-            x1, y1 = x1 - h//2 * sin_x, y1 - w//2 * cos_x
-            x2, y2 = x2 + h//2 * sin_x, y2 - w//2 * cos_x
-            x3, y3 = x3 + h//2 * sin_x, y3 + w//2 * cos_x
-            x4, y4 = x4 - h//2 * sin_x, y4 + w//2 * cos_x
-
-        return ((x1, y1),(x2, y2),(x3, y3),(x4, y4))
-
-    def setGunRotation(self, gun_turns_direction):
-        self.gun_rotation_offset += self.gun_rotation_speed * (gun_turns_direction)
-        self.gun_rotation = self.rotation + self.gun_rotation_offset
+    def getGunRotation(self):
+        return self.gun_rotation + self.rotation
 
     def fire(self, bulletObj):
         if bulletObj.get('type') == Global.NetworkDataCodes.HEAVY_BULLET: bullet = HeavyBullet()

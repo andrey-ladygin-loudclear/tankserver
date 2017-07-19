@@ -21,9 +21,23 @@ class Collisions:
 
     @staticmethod
     def checkWithObjects(object, parent_id = None):
+        try:
+            collisions = Global.CollisionManager.objs_colliding(object)
+        except AttributeError:
+            return False
+
+        if collisions:
+            for tank in Global.GameObjects.getTanks():
+                if tank in collisions:
+                    if parent_id and parent_id == tank.id: continue
+
+                    return True
+
+    @staticmethod
+    def checkWithObjectsOLD(object, parent_id = None):
         for player in Global.GameObjects.getTanks():
 
-            if parent_id == player.id: continue
+            if parent_id and parent_id == player.id: continue
 
             player_points = player.getPoints()
             if Collisions.check(player_points, object.position):

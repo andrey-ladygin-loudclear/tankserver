@@ -48,5 +48,24 @@ def sigmoid(x, maxRange):
 
 
 
-for i in range(30):
-    print i, 40 * logarifm(i)
+#for i in range(30):
+#    print i, 40 * logarifm(i)
+
+
+def getLength(x1, y1, x2, y2):
+    deltax = math.pow(x1 - x2, 2)
+    deltay = math.pow(y1 - y2, 2)
+    return math.sqrt(deltax + deltay)
+
+def getAngle(x1, y1, x2, y2):
+    deltaX = x2 - x1
+    deltaY = y2 - y1
+    rad = math.atan2(deltaX, deltaY)
+    return rad * (180 / math.pi) + 180
+
+
+print getLength(1100,1600, 1100, 1200)
+
+print math.floor(0.1)
+print math.floor(0.5)
+print math.floor(0.9)

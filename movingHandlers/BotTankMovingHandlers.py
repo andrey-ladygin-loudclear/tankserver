@@ -30,8 +30,8 @@ class BotTankMovingHandlers(Thread):
             #print 'bot moving'
             #print self.target.id, self.target.position
 
-            moving_directions = 0
-            tank_rotate = 1
+            #moving_directions = 0
+            #tank_rotate = 1
 
 
 
@@ -42,51 +42,71 @@ class BotTankMovingHandlers(Thread):
            # self.addSpeed(moving_directions)
            # self.setPosition(tank_rotate, moving_directions)
 
-            self.target.move(moving_directions, tank_rotate, 0)
+            #self.target.move(moving_directions, tank_rotate, 0)
             #self.setGunPosition()
 
             # Set the object's rotation
             shortest_player, shortest_distanse = self.getPlayerByShortestDistanse()
 
-            if shortest_player:
-                angleToPlayer = self.getAngleWithPlayer(shortest_player)
-                self.rotateGunToPlayer(shortest_player)
+            if shortest_player and shortest_distanse < 800:
+                    angleToPlayer = self.getAngleWithPlayer(shortest_player)
+                    self.target.reduceSpeed()
+                    self.rotateGunToPlayer(shortest_player)
 
-                if self.target.rotation != self.rotation_angle:
-                    self.rotateToAngle(self.rotation_angle)
-
-                if shortest_distanse < 800:
                     if abs(self.target.gun_rotation - angleToPlayer) < 10:
                         self.fire()
 
                     if abs(self.target.gun_rotation - angleToPlayer) < 5:
                         self.heavy_fire()
+            else:
+                if self.target.clan == 1:
+                    self.goto(1100,1600)
+                else:
+                    self.goto(1100,400)
 
-            time.sleep(0.05)
+            time.sleep(0.01)
             #time.sleep(0.5)
 
 
     def goto(self, x, y):
-        pass
+        currx, curry = self.target.position
+
+        if self.getLength(currx, curry, x, y) > 10:
+            angle = self.getAngle(currx, curry, x, y)
+            self.rotateToAngle(angle)
+            self.target.increaseSpeed(1)
+
+    def rotateGunToAngle(self, angle):
+        gunAngle = abs(self.target.gun_rotation % 360)
+        angleDiff = self.getDiffAngle(gunAngle, angle)
+        self.target.gun_rotation += angleDiff * self.target.rotation_speed
 
     def rotateToAngle(self, angle):
         tankAngle = abs(self.target.rotation % 360)
-        angleDiff = tankAngle - angle
+        angleDiff = self.getDiffAngle(tankAngle, angle)
+        self.target.rotation += angleDiff * self.target.rotation_speed
+
+    def getDiffAngle(self, tankAngle, angle):
+        angleDiff = math.floor(tankAngle - angle)
+
+        if angleDiff == -180: angleDiff -= 1
 
         if (angleDiff > 0 and angleDiff < 180) or angleDiff < -180:
-            self.target.rotation -= self.target.rotation_speed
+            return -1
         elif (angleDiff < 0 and angleDiff > -180) or angleDiff > 180:
-            self.target.rotation += self.target.rotation_speed
+            return 1
+
+        return 0
 
     def rotateGunToPlayer(self, player):
         angleToPlayer = self.getAngleWithPlayer(player)
-        gunAngle = abs(self.target.gun_rotation % 360)
+        gunAngle = abs(self.target.getGunRotation() % 360)
         angleDiff = gunAngle - angleToPlayer
 
         if (angleDiff > 0 and angleDiff < 180) or angleDiff < -180:
-            self.target.setGunRotation(-1)
+            self.target.gun_rotation -= 1
         elif (angleDiff < 0 and angleDiff > -180) or angleDiff > 180:
-            self.target.setGunRotation(1)
+            self.target.gun_rotation += 1
 
     def getAngleWithPlayer(self, player):
         x1, y1 = self.target.position
@@ -98,7 +118,7 @@ class BotTankMovingHandlers(Thread):
         shortest_player = None
 
         for player in Global.GameObjects.getTanks():
-            if player.bot: continue
+            if player.clan == self.target.clan: continue
 
             distanse = self.getDistanceByPlayer(player)
 

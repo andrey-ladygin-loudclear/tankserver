@@ -17,7 +17,7 @@ class Bullet():
     rotation = 0
     last_update_time = 0
     type = ''
-    fireLength = 0
+    fireLength = 600
 
     speed = 200
 

@@ -49,6 +49,24 @@ thread.start()
 #Global.game.addBot()
 #Global.game.addBot()
 
+
+def addUnits():
+    while True:
+        Global.game.addBot(position=(1000,400), clan=1)
+        Global.game.addBot(position=(1100,400), clan=1)
+        Global.game.addBot(position=(1200,400), clan=1)
+
+        Global.game.addBot(position=(1000,1600), clan=2)
+        Global.game.addBot(position=(1100,1600), clan=2)
+        Global.game.addBot(position=(1200,1600), clan=2)
+        sleep(60)
+
+thread = Thread(target = addUnits)
+thread.setDaemon(True)
+thread.start()
+
+Global.game.map.init_walls()
+
 while True:
     connections_listener.Pump()
     sleep(0.0001)

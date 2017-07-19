@@ -2,7 +2,6 @@ import cocos.collision_model as cm
 import cocos.euclid as eu
 
 from gameObjects.Collisions import Collisions
-from gameObjects.landing import destroyableObject
 from helper import Global
 
 
