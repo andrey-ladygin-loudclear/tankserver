@@ -6,10 +6,10 @@ import time
 from cocos import actions
 from pyglet.window import key
 
-import Global
 from gameObjects.Tank import Tank
 from gameObjects.bullets.HeavyBullet import HeavyBullet
 from gameObjects.bullets.StandartBullet import StandartBullet
+from helper import Global
 
 
 class BotTankMovingHandlers(Thread):
@@ -97,7 +97,7 @@ class BotTankMovingHandlers(Thread):
         shortest_distanse = 0
         shortest_player = None
 
-        for player in Global.objects['players']:
+        for player in Global.GameObjects.getTanks():
             if player.bot: continue
 
             distanse = self.getDistanceByPlayer(player)
@@ -145,7 +145,7 @@ class BotTankMovingHandlers(Thread):
             bullet.parent_id = self.target.id
             bullet.id = Global.game.getNextId()
             Global.Queue.append(bullet.getObjectFromSelf())
-            Global.objects['bullets'].append(bullet)
+            Global.GameObjects.addBullet(bullet)
 
             t = Timer(self.heavyBulletFreezTime, self.acceptHeavyFire)
             t.start()
@@ -167,7 +167,7 @@ class BotTankMovingHandlers(Thread):
             bullet.parent_id = self.target.id
             bullet.id = Global.game.getNextId()
             Global.Queue.append(bullet.getObjectFromSelf())
-            Global.objects['bullets'].append(bullet)
+            Global.GameObjects.addBullet(bullet)
 
             if not self.bulletsHolder:
                 t = Timer(3, self.bulletsHolderReload)

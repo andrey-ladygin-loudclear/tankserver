@@ -3,7 +3,8 @@ import random
 import math
 from time import time
 
-import Global
+from helper import Global
+
 
 class Bullet():
 
@@ -18,6 +19,8 @@ class Bullet():
     type = ''
     fireLength = 0
 
+    speed = 200
+
     def __init__(self):
         self.last_update_time = time()
         self.fireLength = self.fireLength + random.randrange(-self.fireLength * 0.1, self.fireLength * 0.1)
@@ -30,7 +33,7 @@ class Bullet():
             Global.NetworkDataCodes.ID: self.id
         })
 
-        if self in Global.objects['bullets']: Global.objects['bullets'].remove(self)
+        if self in Global.GameObjects.getBullets(): Global.GameObjects.removeBullet(self)
 
     def update(self):
         angle = self.rotation

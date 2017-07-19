@@ -3,8 +3,9 @@ from time import sleep
 
 from PodSixNet.Server import Server
 
-import Global
 from events.ClientChannel import ClientChannel
+from helper import Global
+
 
 class Network(Server):
     channelClass = ClientChannel
@@ -44,7 +45,12 @@ class Network(Server):
         #     'walls': Global.game.wallsObjects(),
         # })
 
+    def close(self):
+        Server.close(self)
+        print 'close'
+
     def sendDataToClients(self, channel):
+        print 'sendDataToClients'
         pass
         while True:
             os = Global.game.getAllObjects()

@@ -1,13 +1,21 @@
 from threading import Thread
 from time import sleep, time
 
-import Global
-from events.Network import Network
+import cocos.collision_model as cm
 
-Global.init()
+#import Global
+from events.Game import Game
+from events.Network import Network
+from helper import Global
+from helper.Objects import Objects
+
 connections_listener = Network(localaddr=(Global.server, 1332))
 
 # myserver.SendToAll({"action": "processSync"}) !!!!!!!!!!!!!!!!!!!!!!!!!
+
+Global.CollisionManager = cm.CollisionManagerBruteForce()
+Global.game = Game()
+Global.GameObjects = Objects()
 
 thread = Thread(target = Global.game.callSendDataToPlayers)
 thread.setDaemon(True)
@@ -38,8 +46,8 @@ thread.start()
 # thread.setDaemon(True)
 # thread.start()
 
-Global.game.addBot()
-Global.game.addBot()
+#Global.game.addBot()
+#Global.game.addBot()
 
 while True:
     connections_listener.Pump()

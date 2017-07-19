@@ -10,7 +10,7 @@ from gameObjects.bullets.StandartBullet import StandartBullet
 from helper import Global
 
 
-class Tank:
+class OLDTank:
     id = 0
     tankClass = ''
     fraction = ''
@@ -61,9 +61,7 @@ class Tank:
         }
 
     def update(self, object):
-        self.position = object.get('position')
-        self.rotation = object.get('rotation')
-        self.gun_rotation = object.get('gun_rotation')
+        self.move(object.get('mov'), object.get('turn'), object.get('gun_turn'))
 
     def move(self, move, rotation, gun_rotation):
         self.increaseSpeed(move)
@@ -162,8 +160,8 @@ class Tank:
         self.gun_rotation = self.rotation + self.gun_rotation_offset
 
     def fire(self, bulletObj):
-        if bulletObj.get('type') == Global.NetworkDataCodes.HEAVY_BULLET: bullet = HeavyBullet()
-        if bulletObj.get('type') == Global.NetworkDataCodes.STANDART_BULLET: bullet = StandartBullet()
+        if bulletObj.get('type') == 'HeavyBullet': bullet = HeavyBullet()
+        if bulletObj.get('type') == 'StandartBullet': bullet = StandartBullet()
 
         bullet.position = bulletObj.get('pos')
         bullet.start_position = bullet.position

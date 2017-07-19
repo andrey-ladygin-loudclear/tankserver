@@ -1,11 +1,12 @@
 import json
 
-import Global
 import cocos.collision_model as cm
 
 from gameObjects.landing.backgroundObject import backgroundObject
 from gameObjects.landing.decorationObject import decorationObject
 from gameObjects.landing.destroyableObject import destroyableObject
+from gameObjects.landing.unmovableBackgroundObject import unmovableBackgroundObject
+from helper import Global
 
 
 class Map:
@@ -25,11 +26,18 @@ class Map:
 
         for object in map:
 
+            #print object.get('type'), object.get('src')
+
+    #1 - background, 2 - unmovable background, 3 - indestructible object, 4 - object
+
+            if object.get('type') == 4:
+                wall = destroyableObject()
+
             if object.get('type') == 3:
                 wall = decorationObject()
 
             if object.get('type') == 2:
-                wall = destroyableObject()
+                wall = unmovableBackgroundObject()
 
             if object.get('type') == 1:
                 wall = backgroundObject()
@@ -43,8 +51,9 @@ class Map:
 
             self.walls.append(wall)
 
-            if object.get('type') != 'background':
-                Global.objects['walls'].append(wall)
-                Global.collision_manager.add(wall)
+            if wall.type != 'background':
+                Global.GameObjects.addWall(wall)
+                # Global.objects['walls'].append(wall)
+                # Global.collision_manager.add(wall)
 
         return self.walls

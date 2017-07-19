@@ -1,8 +1,8 @@
 
 import random
 
-import Global
 from gameObjects.Bullet import Bullet
+from helper import Global
 
 
 class StandartBullet(Bullet):

@@ -2,14 +2,12 @@ import random
 from time import sleep, time
 import cocos.collision_model as cm
 
-import Global
 from gameObjects.Collisions import Collisions
 from gameObjects.Explosion import Explosion
 from gameObjects.Map import Map
 
 from gameObjects.Tank import Tank
-from gameObjects.tanks.ETank import ETank
-from gameObjects.tanks.KVTank import KVTank
+from helper import Global
 from movingHandlers.BotTankMovingHandlers import BotTankMovingHandlers
 
 
@@ -26,7 +24,7 @@ class Game:
         return walls
 
     def addBot(self):
-        tank = ETank()
+        tank = Tank()
         tank.id = self.getNextId()
         tank.bot = True
         tank.position = (random.randrange(1, 1000), random.randrange(1, 1000))#random.choice([(500, 500), (1200, 1000), (700, 1500), (1200, 500)])
@@ -35,19 +33,17 @@ class Game:
         moving_handler.setDaemon(True)
         moving_handler.start()
 
-        Global.objects['players'].append(tank)
-        Global.collision_manager.add(tank)
+        Global.GameObjects.addTank(tank)
 
         self.sendAllTanksToClients()
 
         return tank.id
 
     def addPlayer(self):
-        tank = KVTank()
+        tank = Tank()
         tank.id = self.getNextId()
         tank.position = self.getPlayerPosition()
-        Global.objects['players'].append(tank)
-        Global.collision_manager.add(tank)
+        Global.GameObjects.addTank(tank)
         self.sendAllTanksToClients()
         return tank.id
 
@@ -72,17 +68,16 @@ class Game:
             'action': Global.NetworkActions.UPDATE_BATCH,
             'objects': []
         }
-        for player in Global.objects['players']:
+
+        for player in Global.GameObjects.getTanks():
             player.setNewPosition()
             batch['objects'].append(player.getObjectFromSelf())
 
-            #if player.checkIfStateChanged():
-            #Global.Queue.append(player.getObjectFromSelf())
         Global.Queue.append(batch)
 
 
     def checkCollisions(self):
-        for bullet in Global.objects['bullets']:
+        for bullet in Global.GameObjects.getBullets():
             bullet.update()
             bullet.cshape = cm.AARectShape(bullet.position, 2, 2)
 
@@ -91,7 +86,7 @@ class Game:
                 explosion.checkDamageCollisions()
                 bullet.destroy()
 
-        for wall in Global.objects['walls']:
+        for wall in Global.GameObjects.getWalls():
             if wall.health <= 0:
                 wall.destroy()
 
@@ -119,7 +114,7 @@ class Game:
         return (100, 100)
 
     def sendAllTanksToClients(self):
-        for player in Global.objects['players']:
+        for player in Global.GameObjects.getTanks():
             Global.Queue.append(player.getObjectFromSelf())
 
     def callSendDataToPlayers(self):

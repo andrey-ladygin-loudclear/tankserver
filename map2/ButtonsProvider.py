@@ -21,6 +21,9 @@ class ButtonsProvider:
         for wall in walls:
             x, y = wall.position
 
+            x += 16
+            y += 16
+
             data.append({
                 'position': (x + abs(minx), y + abs(miny)),
                 'scale': wall.scale,

@@ -1,16 +1,19 @@
 import math
 
-import Global
+from helper import Global
 
 
 class Collisions:
 
     @staticmethod
     def checkWithWalls(object):
-        collisions = Global.collision_manager.objs_colliding(object)
+        try:
+            collisions = Global.CollisionManager.objs_colliding(object)
+        except AttributeError:
+            return False
 
         if collisions:
-            for wall in Global.objects['walls']:
+            for wall in Global.GameObjects.getWalls():
                 if wall in collisions:
                     return True
 
@@ -18,7 +21,7 @@ class Collisions:
 
     @staticmethod
     def checkWithObjects(object, parent_id = None):
-        for player in Global.objects['players']:
+        for player in Global.GameObjects.getTanks():
 
             if parent_id == player.id: continue
 
@@ -26,13 +29,13 @@ class Collisions:
             if Collisions.check(player_points, object.position):
                 return True
 
-        for enemy in Global.objects['enemies']:
-
-            if parent_id == enemy.id: continue
-
-            enemy_points = enemy.getPoints()
-            if Collisions.check(enemy_points, object.position):
-                return True
+        # for enemy in Global.objects['enemies']:
+        #
+        #     if parent_id == enemy.id: continue
+        #
+        #     enemy_points = enemy.getPoints()
+        #     if Collisions.check(enemy_points, object.position):
+        #         return True
 
         return False
 
@@ -40,7 +43,7 @@ class Collisions:
     def checkManualCollisionsWidthWalls(object):
         object_points = object.getPoints()
 
-        for wall in Global.objects['walls']:
+        for wall in Global.GameObjects.getWalls():
             wall_points = wall.getPoints()
 
             if Collisions.wallNearObject(object_points, wall_points):

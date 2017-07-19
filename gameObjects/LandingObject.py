@@ -1,7 +1,8 @@
 import math
 
-import Global
 import cocos.collision_model as cm
+
+from helper import Global
 
 
 class LandingObject():
@@ -33,7 +34,7 @@ class LandingObject():
             Global.NetworkDataCodes.ID: self.id
         })
 
-        if self in Global.objects['walls']: Global.objects['walls'].remove(self)
+        if self in Global.GameObjects.getWalls(): Global.GameObjects.removeWall(self)
 
 
     def getPoints(self):

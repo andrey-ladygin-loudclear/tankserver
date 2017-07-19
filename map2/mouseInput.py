@@ -30,7 +30,7 @@ class MouseInput(ScrollableLayer):
 
     appendMode = 1
 
-    buttonsTextHelp = "q-pallet, 1 - background, unmovable background, 3 - indestructible object, 4 - object, t - increase type"
+    buttonsTextHelp = "q-pallet, 1 - background, 2 - unmovable background, 3 - indestructible object, 4 - object, t - increase type"
 
 
     viewPoint = (0, 0)
@@ -81,8 +81,12 @@ class MouseInput(ScrollableLayer):
         #imgs = sorted(glob.glob('assets/*'))
         imgs = sorted(scandir('assets'))
 
-        for file in imgs:
-            src = 'assets/' + str(file.name)
+        names = []
+        for file in imgs: names.append(file.name)
+
+
+        for src in sorted(names):
+            src = 'assets/' + str(src)
 
             land = sprite.Sprite(src)
             land.cshape = cm.AARectShape(land.position, land.width//2, land.height//2)
@@ -99,7 +103,7 @@ class MouseInput(ScrollableLayer):
             x = land.width * .5 + land.width * col + offset - self.currentWidth // 2
             y = land.height * .5 + land.height * row + offset - self.currentHeight // 2
             col += 1
-            if col > 20:
+            if col > 19:
                 row += 1
                 col = 0
             land.position = (x, y)
