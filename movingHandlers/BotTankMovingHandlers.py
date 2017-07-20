@@ -46,26 +46,29 @@ class BotTankMovingHandlers(Thread):
             #self.setGunPosition()
 
             # Set the object's rotation
-            shortest_player, shortest_distanse = self.getPlayerByShortestDistanse()
-
-            if shortest_player and shortest_distanse < 800:
-                    angleToPlayer = self.getAngleWithPlayer(shortest_player)
-                    self.target.reduceSpeed()
-                    self.rotateGunToPlayer(shortest_player)
-
-                    if abs(self.target.gun_rotation - angleToPlayer) < 10:
-                        self.fire()
-
-                    if abs(self.target.gun_rotation - angleToPlayer) < 5:
-                        self.heavy_fire()
-            else:
-                if self.target.clan == 1:
-                    self.goto(1100,1600)
-                else:
-                    self.goto(1100,400)
+            self.check_position()
 
             time.sleep(0.01)
             #time.sleep(0.5)
+
+    def check_position(self):
+        shortest_player, shortest_distanse = self.getPlayerByShortestDistanse()
+
+        if shortest_player and shortest_distanse < 600:
+            angleToPlayer = self.getAngleWithPlayer(shortest_player)
+            self.rotateGunToPlayer(shortest_player)
+            diffAngle = self.getDiffAngleInSector(self.target.getGunRotation(), angleToPlayer)
+
+            if diffAngle < 10:
+                self.target.fire()
+
+            if diffAngle < 5:
+                self.target.heavy_fire()
+        else:
+            if self.target.clan == 1:
+                self.goto(1100,1600)
+            else:
+                self.goto(1100,400)
 
 
     def goto(self, x, y):
@@ -74,10 +77,10 @@ class BotTankMovingHandlers(Thread):
         if self.getLength(currx, curry, x, y) > 10:
             angle = self.getAngle(currx, curry, x, y)
             self.rotateToAngle(angle)
-            self.target.increaseSpeed(1)
+            self.target.move(1)
 
     def rotateGunToAngle(self, angle):
-        gunAngle = abs(self.target.gun_rotation % 360)
+        gunAngle = abs(self.target.gun_rotation() % 360)
         angleDiff = self.getDiffAngle(gunAngle, angle)
         self.target.gun_rotation += angleDiff * self.target.rotation_speed
 
@@ -151,6 +154,14 @@ class BotTankMovingHandlers(Thread):
         if degrees < 0: degrees += 360
         return degrees
 
+    def getMinDiffAngle(self, angle):
+        return min(180 - angle % 180, angle % 180)
+
+    def getDiffAngleInSector(self, angle1, angle2):
+        angle1 = self.getMinDiffAngle(angle1)
+        angle2 = self.getMinDiffAngle(angle2)
+        return abs(angle1 - angle2)
+
     canHeavyFire = True
 
     def heavy_fire(self):
@@ -158,7 +169,7 @@ class BotTankMovingHandlers(Thread):
             self.canHeavyFire = False
 
             bullet = HeavyBullet()
-            bullet.rotation = self.target.gun_rotation - 90 + self.getHeavyGunAngleDeflection()
+            bullet.rotation = self.target.getGunRotation() - 90 + self.getHeavyGunAngleDeflection()
             bullet.position = self.target.position
 
             bullet.start_position = bullet.position
@@ -178,7 +189,7 @@ class BotTankMovingHandlers(Thread):
             self.bulletsHolder -= 1
 
             bullet = StandartBullet()
-            bullet.rotation = self.target.gun_rotation - 90 + self.getStandartGunAngleDeflection()
+            bullet.rotation = self.target.getGunRotation() - 90 + self.getStandartGunAngleDeflection()
             bullet.position = self.target.position
             # bullet.rotation = self.target.Gun.getRotation() + self.target.Gun.getStandartGunAngleDeflection()
             # bullet.position = self.target.Gun.standartFirePosition()

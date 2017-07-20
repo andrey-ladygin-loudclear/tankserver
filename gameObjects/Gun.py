@@ -1,3 +1,6 @@
+from gameObjects.weapons.HeavyWeapon import HeavyWeapon
+from gameObjects.weapons.LightWeapon import LightWeapon
+
 
 class Gun():
 
@@ -9,7 +12,7 @@ class Gun():
 
     tank = None
 
-    def __init__(self, spriteName, tank):
+    def __init__(self, tank):
         self.weapon1 = HeavyWeapon(self)
         self.weapon2 = LightWeapon(self)
         self.tank = tank
@@ -19,6 +22,3 @@ class Gun():
 
     def fireSecondWeapon(self):
         self.weapon2.fire()
-
-    def getRotation(self):
-        return self.rotation

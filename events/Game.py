@@ -27,13 +27,14 @@ class Game:
         tank = Tank()
         tank.id = self.getNextId()
         tank.bot = True
-        tank.position = position
+        tank.setPosition(position)
         tank.clan = clan
         tank.gun_rotation = random.randrange(1, 360)
 
-        moving_handler = BotTankMovingHandlers(tank)
-        moving_handler.setDaemon(True)
-        moving_handler.start()
+        #moving_handler = BotTankMovingHandlers(tank)
+        #moving_handler.setDaemon(True)
+        #moving_handler.start()
+        tank.moving_handler = BotTankMovingHandlers(tank)
 
         Global.GameObjects.addTank(tank)
 
@@ -45,7 +46,7 @@ class Game:
         tank = Tank()
         tank.id = self.getNextId()
         tank.clan = 1
-        tank.position = self.getPlayerPosition()
+        tank.setPosition(self.getPlayerPosition())
         Global.GameObjects.addTank(tank)
         self.sendAllTanksToClients()
         return tank.id
@@ -72,9 +73,15 @@ class Game:
             'objects': []
         }
 
-        for player in Global.GameObjects.getTanks():
-            player.setNewPosition()
-            batch['objects'].append(player.getObjectFromSelf())
+        for tank in Global.GameObjects.getTanks():
+            #player.setNewPosition()
+
+            try:
+                tank.moving_handler.check_position()
+            except AttributeError:
+                pass
+
+            batch['objects'].append(tank.getObjectFromSelf())
 
         Global.Queue.append(batch)
 

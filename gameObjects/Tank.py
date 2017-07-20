@@ -4,6 +4,7 @@ import random
 import cocos.collision_model as cm
 
 from gameObjects.Collisions import Collisions
+from gameObjects.Gun import Gun
 from gameObjects.bullets.HeavyBullet import HeavyBullet
 
 from gameObjects.bullets.StandartBullet import StandartBullet
@@ -12,12 +13,10 @@ from helper import Global
 
 class Tank:
     bot = False
+    clan = 0
 
     Gun = None
-    gun_rotation = 0
     id = 0
-
-    speed = 20
 
     old_position = (0, 0)
     velocity = (0, 0)
@@ -26,8 +25,21 @@ class Tank:
     bulletsHolder = 10
     timeForBulletsHolderReload = 3
 
-    #def __init__(self):
-        #self.Gun = Gun(self)
+    width = 50
+    height = 50
+    scale = 0.5
+
+    health = 100
+
+    gun_rotation = 0
+    rotation = 0
+    rotation_speed = 1
+    gun_rotation_speed = 1
+    speed = 2
+
+
+    def __init__(self):
+        self.Gun = Gun(self)
 
     #
     # def _update_position(self):
@@ -57,27 +69,58 @@ class Tank:
             Global.NetworkDataCodes.POSITION: (int(x), int(y)),
             Global.NetworkDataCodes.ROTATION: int(r),
             Global.NetworkDataCodes.GUN_ROTATION: int(gr),
-            Global.NetworkDataCodes.FRACTION: self.fraction,
-            Global.NetworkDataCodes.TYPE: self.tankClass,
+            Global.NetworkDataCodes.TYPE: self.clan,
+            Global.NetworkDataCodes.HEALTH: self.health,
         }
 
     def getGunRotation(self):
         return self.gun_rotation + self.rotation
 
-    def fire(self, bulletObj):
-        if bulletObj.get('type') == Global.NetworkDataCodes.HEAVY_BULLET: bullet = HeavyBullet()
-        if bulletObj.get('type') == Global.NetworkDataCodes.STANDART_BULLET: bullet = StandartBullet()
+    def setPosition(self, position):
+        self.position = position
+        self.cshape = cm.AARectShape(self.position, self.width//2, self.height//2)
 
-        bullet.position = bulletObj.get('pos')
-        bullet.start_position = bullet.position
-        bullet.rotation = bulletObj.get('rotation')
-        bullet.parent_id = self.id
-        bullet.id = Global.game.getNextId()
+    def move(self, speed):
+        x, y = self.position
+        tank_rotation = self.rotation
+        cos_x = math.cos(math.radians(tank_rotation + 180))
+        sin_x = math.sin(math.radians(tank_rotation + 180))
+        new_position = (speed * sin_x + x, speed * cos_x + y)
 
-        Global.Queue.append(bullet.getObjectFromSelf())
+        obj = Tank()
+        obj.setPosition(new_position)
+        obj.cshape = cm.AARectShape(obj.position, obj.width//2, obj.height//2)
 
-        #Global.objects['bullets'].append(bullet)
-        Global.GameObjects.addBullet(bullet)
+        #if Collisions.checkManualCollisionsWidthWalls(self):
+        # collisions = Global.CollisionManager.objs_colliding(obj)
+        # if Global.CollisionManager.knows(obj):
+        #     Global.CollisionManager.remove_tricky(obj)
+        #
+        # if obj in collisions:
+        #     return
+
+        self.setPosition(obj.position)
+        del obj
+
+    def update(self, data):
+        self.position = data.get('position')
+        self.gun_rotation = data.get('gun_rotation')
+        self.rotation = data.get('rotation')
+
+    # def fire(self, bulletObj):
+    #     if bulletObj.get('type') == Global.NetworkDataCodes.HEAVY_BULLET: bullet = HeavyBullet()
+    #     if bulletObj.get('type') == Global.NetworkDataCodes.STANDART_BULLET: bullet = StandartBullet()
+    #
+    #     bullet.position = bulletObj.get('pos')
+    #     bullet.start_position = bullet.position
+    #     bullet.rotation = bulletObj.get('rotation')
+    #     bullet.parent_id = self.id
+    #     bullet.id = Global.game.getNextId()
+    #
+    #     Global.Queue.append(bullet.getObjectFromSelf())
+    #
+    #     #Global.objects['bullets'].append(bullet)
+    #     Global.GameObjects.addBullet(bullet)
 
 
     def damage(self, bullet):
