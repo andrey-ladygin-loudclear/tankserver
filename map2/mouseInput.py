@@ -77,6 +77,15 @@ class MouseInput(ScrollableLayer):
             if spriteObj.type:
                 self.collision.add(spriteObj)
 
+        # spriteObj = sprite.Sprite('backgrounds/fill.png')
+        # spriteObj.src = 'backgrounds/fill.png'
+        # spriteObj.position = (0, 0)
+        # spriteObj.type = 0
+        #
+        # self.add(spriteObj)
+        #
+        # return
+
     def loadPalitra(self):
         #imgs = sorted(glob.glob('assets/*'))
         imgs = sorted(scandir('assets'))
@@ -138,7 +147,24 @@ class MouseInput(ScrollableLayer):
         if self.keyboard[key.T]:
             self.currentType += 1
             if self.currentType > 4: self.currentType = 1
+            self.updateInfo('T')
             sleep(0.1)
+
+        if self.keyboard[key.NUM_1]:
+            self.currentType = 1
+            self.updateInfo('1')
+
+        if self.keyboard[key.NUM_2]:
+            self.currentType = 2
+            self.updateInfo('2')
+
+        if self.keyboard[key.NUM_3]:
+            self.currentType = 3
+            self.updateInfo('3')
+
+        if self.keyboard[key.NUM_4]:
+            self.currentType = 4
+            self.updateInfo('4')
 
     def setLayersPosition(self):
         x, y = self.getCoordByViewPoint(0, 0)
@@ -193,12 +219,16 @@ class MouseInput(ScrollableLayer):
 
         sleep(0.01)
 
-        info = "press: " + str(x) + ',' + str(y)
+        self.updateInfo(str(x) + ',' + str(y))
+
+    def updateInfo(self, info):
+        info = "press: " + str(info)
         info += ", width: " + str(self.currentWidth) + ", height: " + str(self.currentHeight)
-        if self.currentSprite: info += ", currentSprite: " + str(self.currentSprite.image)
+        if self.currentSprite: info += ", currentSprite: " + str(self.currentSprite.src)
         if self.currentType: info += ", currentType: " + str(self.currentType)
 
         self.text.element.text = info
+
 
     def selectBrick(self, x, y):
         dx, dy = self.palitra.position

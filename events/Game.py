@@ -23,11 +23,12 @@ class Game:
 
         return walls
 
-    def addBot(self, position=(0,0), clan=0):
+    def addBot(self, position=(0,0), rotation=0, clan=0):
         tank = Tank()
         tank.id = self.getNextId()
         tank.bot = True
         tank.setPosition(position)
+        tank.rotation = rotation
         tank.clan = clan
         tank.gun_rotation = random.randrange(1, 360)
 
@@ -95,6 +96,10 @@ class Game:
                 explosion = Explosion(bullet)
                 explosion.checkDamageCollisions()
                 bullet.destroy()
+
+        for tank in Global.GameObjects.getTanks():
+            if tank.health <= 0:
+                tank.destroy()
 
         for wall in Global.GameObjects.getWalls():
             if wall.health <= 0:

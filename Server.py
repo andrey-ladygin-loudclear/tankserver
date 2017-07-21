@@ -52,9 +52,9 @@ thread.start()
 
 def addUnits():
     while True:
-        Global.game.addBot(position=(500,400), clan=1)
-        Global.game.addBot(position=(1100,400), clan=1)
-        Global.game.addBot(position=(1500,400), clan=1)
+        Global.game.addBot(position=(500,400), clan=1, rotation=180)
+        Global.game.addBot(position=(1100,400), clan=1, rotation=180)
+        Global.game.addBot(position=(1500,400), clan=1, rotation=180)
 
         Global.game.addBot(position=(800,1600), clan=2)
         Global.game.addBot(position=(1100,1600), clan=2)

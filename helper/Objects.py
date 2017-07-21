@@ -22,6 +22,10 @@ class Objects:
 
         return None
 
+    def removeTank(self, tank):
+        self.tanks.remove(tank)
+        Global.CollisionManager.remove_tricky(tank)
+
     def addWall(self, wall):
         self.walls.append(wall)
         Global.CollisionManager.add(wall)

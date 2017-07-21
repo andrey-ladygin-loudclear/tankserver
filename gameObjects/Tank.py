@@ -149,6 +149,16 @@ class Tank:
             Global.NetworkDataCodes.DAMAGE: dmg
         })
 
+    def destroy(self):
+        Global.Queue.append({
+            "action": Global.NetworkActions.DESTROY,
+            Global.NetworkDataCodes.TYPE: Global.NetworkDataCodes.TANK,
+            Global.NetworkDataCodes.POSITION: self.position,
+            Global.NetworkDataCodes.ID: self.id
+        })
+
+        if self in Global.GameObjects.getTanks(): Global.GameObjects.removeTank(self)
+
     def damageKoef(self, range):
         maxRange = 20
 

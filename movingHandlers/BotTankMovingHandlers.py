@@ -59,8 +59,8 @@ class BotTankMovingHandlers(Thread):
             self.rotateGunToPlayer(shortest_player)
             diffAngle = self.getDiffAngleInSector(self.target.getGunRotation(), angleToPlayer)
 
-            if diffAngle < 10:
-                self.target.fire()
+            #if diffAngle < 10:
+            #    self.target.fire()
 
             if diffAngle < 5:
                 self.target.heavy_fire()
