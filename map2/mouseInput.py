@@ -3,7 +3,7 @@ from time import sleep
 
 import cocos
 from cocos import sprite
-from cocos.layer import Layer, director, ScrollableLayer
+from cocos.layer import Layer, director, ScrollableLayer, pyglet
 from cocos.text import Label
 import cocos.collision_model as cm
 
@@ -64,18 +64,21 @@ class MouseInput(ScrollableLayer):
 
     def loadMap(self, map):
         for block in map:
-            x, y = block['position']
-            spriteObj = sprite.Sprite(block['src'])
-            spriteObj.src = block['src']
-            spriteObj.position = (x, y)
-            spriteObj.type = block['type']
-            spriteObj.cshape = cm.AARectShape(spriteObj.position,spriteObj.width//2,spriteObj.height//2)
+            try:
+                x, y = block['position']
+                spriteObj = sprite.Sprite(block['src'])
+                spriteObj.src = block['src']
+                spriteObj.position = (x, y)
+                spriteObj.type = block['type']
+                spriteObj.cshape = cm.AARectShape(spriteObj.position,spriteObj.width//2,spriteObj.height//2)
 
-            self.walls.append(spriteObj)
-            self.add(spriteObj)
+                self.walls.append(spriteObj)
+                self.add(spriteObj)
 
-            if spriteObj.type:
-                self.collision.add(spriteObj)
+                if spriteObj.type:
+                    self.collision.add(spriteObj)
+            except pyglet.resource.ResourceNotFoundException:
+                pass
 
         # spriteObj = sprite.Sprite('backgrounds/fill.png')
         # spriteObj.src = 'backgrounds/fill.png'

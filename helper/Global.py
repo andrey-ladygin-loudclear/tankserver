@@ -20,6 +20,8 @@ class NetworkDataCodes:
     LAST_UPDATE_TIME = 'lt'
     ROTATION = 'r'
     TYPE = 'y'
+    CLAN = 'c'
+    SCALE = 'sc'
     SRC = 's'
     ID = 'i'
     HEALTH = 'h'

@@ -17,6 +17,7 @@ class Tank:
 
     Gun = None
     id = 0
+    type = 1
 
     old_position = (0, 0)
     velocity = (0, 0)
@@ -69,8 +70,9 @@ class Tank:
             Global.NetworkDataCodes.POSITION: (int(x), int(y)),
             Global.NetworkDataCodes.ROTATION: int(r),
             Global.NetworkDataCodes.GUN_ROTATION: int(gr),
-            Global.NetworkDataCodes.TYPE: self.clan,
+            Global.NetworkDataCodes.CLAN: self.clan,
             Global.NetworkDataCodes.HEALTH: self.health,
+            Global.NetworkDataCodes.TYPE: self.type,
         }
 
     def getGunRotation(self):

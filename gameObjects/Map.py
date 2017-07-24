@@ -2,8 +2,8 @@ import json
 
 import cocos.collision_model as cm
 
-
-from gameObjects.LandingObject import LandingObject
+from Landing.Center import Center
+from Landing.LandingObject import LandingObject
 from helper import Global
 
 
@@ -37,6 +37,24 @@ class Map:
                 # Global.objects['walls'].append(wall)
                 # Global.collision_manager.add(wall)
 
+        self.addCenters()
 
     def get_walls(self):
         return self.walls
+
+    def addCenters(self):
+        center1 = self.addCenter((1140, 350), 1)
+        center2 = self.addCenter((1140, 3870 - 350), 2)
+
+        Global.GameObjects.setCenter(center1, 1)
+        Global.GameObjects.setCenter(center2, 2)
+
+    def addCenter(self, position, clan):
+        center = Center()
+        center.id = Global.game.getNextId()
+        center.src = 'assets/buildings/center.png'
+        center.set_position(position)
+        center.clan = clan
+        Global.GameObjects.addWall(center)
+        self.walls.append(center)
+        return center

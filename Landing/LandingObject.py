@@ -61,5 +61,6 @@ class LandingObject():
             Global.NetworkDataCodes.ID: self.id,
             Global.NetworkDataCodes.POSITION: self.position,
             Global.NetworkDataCodes.TYPE: self.type,
+            Global.NetworkDataCodes.SCALE: self.scale,
             Global.NetworkDataCodes.SRC: self.src
         }

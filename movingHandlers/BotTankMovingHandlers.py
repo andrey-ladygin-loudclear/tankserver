@@ -26,30 +26,10 @@ class BotTankMovingHandlers(Thread):
 
     def run(self):
         while True:
-            #time.sleep(secondsToSleep)
-            #print 'bot moving'
-            #print self.target.id, self.target.position
-
-            #moving_directions = 0
-            #tank_rotate = 1
-
-
-
-            #self.increaseSpeed(object.get('mov'))
-            #self.setGunRotation(object.get('gun_turn'))
-            #self.setTankRotation(object.get('turn'), object.get('mov'))
-
-           # self.addSpeed(moving_directions)
-           # self.setPosition(tank_rotate, moving_directions)
-
-            #self.target.move(moving_directions, tank_rotate, 0)
-            #self.setGunPosition()
-
             # Set the object's rotation
             self.check_position()
 
             time.sleep(0.01)
-            #time.sleep(0.5)
 
     def check_position(self):
         shortest_player, shortest_distanse = self.getPlayerByShortestDistanse()
@@ -65,11 +45,7 @@ class BotTankMovingHandlers(Thread):
             if diffAngle < 5:
                 self.target.heavy_fire()
         else:
-            if self.target.clan == 1:
-                self.goto(1100,1600)
-            else:
-                self.goto(1100,400)
-
+            self.setDefaultMoving()
 
     def goto(self, x, y):
         currx, curry = self.target.position
@@ -162,68 +138,8 @@ class BotTankMovingHandlers(Thread):
         angle2 = self.getMinDiffAngle(angle2)
         return abs(angle1 - angle2)
 
-    canHeavyFire = True
-
-    def heavy_fire(self):
-        if self.canHeavyFire:
-            self.canHeavyFire = False
-
-            bullet = HeavyBullet()
-            bullet.rotation = self.target.getGunRotation() - 90 + self.getHeavyGunAngleDeflection()
-            bullet.position = self.target.position
-
-            bullet.start_position = bullet.position
-            bullet.parent_id = self.target.id
-            bullet.id = Global.game.getNextId()
-            Global.Queue.append(bullet.getObjectFromSelf())
-            Global.GameObjects.addBullet(bullet)
-
-            t = Timer(self.heavyBulletFreezTime, self.acceptHeavyFire)
-            t.start()
-
-    canFire = True
-    bulletsHolder = 10
-    def fire(self):
-        if self.canFire:
-            self.canFire = False
-            self.bulletsHolder -= 1
-
-            bullet = StandartBullet()
-            bullet.rotation = self.target.getGunRotation() - 90 + self.getStandartGunAngleDeflection()
-            bullet.position = self.target.position
-            # bullet.rotation = self.target.Gun.getRotation() + self.target.Gun.getStandartGunAngleDeflection()
-            # bullet.position = self.target.Gun.standartFirePosition()
-
-            bullet.start_position = bullet.position
-            bullet.parent_id = self.target.id
-            bullet.id = Global.game.getNextId()
-            Global.Queue.append(bullet.getObjectFromSelf())
-            Global.GameObjects.addBullet(bullet)
-
-            if not self.bulletsHolder:
-                t = Timer(3, self.bulletsHolderReload)
-                t.start()
-                return
-
-            t = Timer(self.bulletFreezTime, self.acceptFire)
-            t.start()
-
-    bulletFreezTime = 0.1
-    heavyBulletFreezTime = 3
-
-    def bulletsHolderReload(self):
-        self.canFire = True
-        self.bulletsHolder = 10
-
-    def acceptFire(self):
-        self.canFire = True
-
-    def acceptHeavyFire(self):
-        self.canHeavyFire = True
-
-
-    def getHeavyGunAngleDeflection(self):
-        return random.randrange(-200, 200) / 100
-
-    def getStandartGunAngleDeflection(self):
-        return random.randrange(-500, 500) / 100
+    def setDefaultMoving(self):
+        clan = 2 - self.target.clan + 1
+        center = Global.GameObjects.getCenter(clan)
+        x, y = center.position
+        self.goto(x, y)

@@ -23,13 +23,14 @@ class Game:
 
         return walls
 
-    def addBot(self, position=(0,0), rotation=0, clan=0):
+    def addBot(self, position=(0,0), rotation=0, clan=0, type=1):
         tank = Tank()
         tank.id = self.getNextId()
         tank.bot = True
         tank.setPosition(position)
         tank.rotation = rotation
         tank.clan = clan
+        tank.type = type
         tank.gun_rotation = random.randrange(1, 360)
 
         #moving_handler = BotTankMovingHandlers(tank)

@@ -8,6 +8,7 @@ class Objects:
     backgrounds = []
     bullets = []
     tanks = []
+    centers = {}
 
     def addTank(self, tank):
         self.tanks.append(tank)
@@ -47,3 +48,9 @@ class Objects:
 
     def removeBullet(self, bullet):
         self.bullets.remove(bullet)
+
+    def setCenter(self, center, clan):
+        self.centers[clan] = center
+
+    def getCenter(self, clan):
+        return self.centers[clan]
