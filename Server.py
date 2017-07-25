@@ -52,17 +52,21 @@ thread.start()
 
 def addUnits():
     while True:
-        Global.game.addBot(position=(500,450), clan=1, rotation=180, type=1)
-        Global.game.addBot(position=(600,450), clan=1, rotation=180, type=2)
-        Global.game.addBot(position=(700,450), clan=1, rotation=180, type=3)
-        Global.game.addBot(position=(800,450), clan=1, rotation=180, type=4)
-        Global.game.addBot(position=(900,450), clan=1, rotation=180, type=5)
-        Global.game.addBot(position=(1000,450), clan=1, rotation=180, type=6)
-        Global.game.addBot(position=(1100,450), clan=1, rotation=180, type=7)
+        # Global.game.addBot(position=(500,450), clan=1, rotation=180, type=1)
+        # Global.game.addBot(position=(600,450), clan=1, rotation=180, type=2)
+        # Global.game.addBot(position=(700,450), clan=1, rotation=180, type=3)
+        # Global.game.addBot(position=(800,450), clan=1, rotation=180, type=4)
+        # Global.game.addBot(position=(900,450), clan=1, rotation=180, type=5)
+        # Global.game.addBot(position=(1000,450), clan=1, rotation=180, type=6)
+        # Global.game.addBot(position=(1100,450), clan=1, rotation=180, type=7)
 
-        Global.game.addBot(position=(800,3870 - 350), clan=2, type=2)
-        Global.game.addBot(position=(1100,3870 - 350), clan=2, type=2)
-        Global.game.addBot(position=(1500,3870 - 350), clan=2, type=2)
+        #Global.game.addBot(position=(800,3870 - 350), clan=2, type=2)
+        #Global.game.addBot(position=(1100,3870 - 350), clan=2, type=2)
+        #Global.game.addBot(position=(1500,3870 - 350), clan=2, type=2)
+
+        #Global.game.addBot(position=(800,600), clan=2, type=2)
+        #Global.game.addBot(position=(1100,600), clan=2, type=2)
+        Global.game.addBot(position=(800,600), clan=2, type=2)
 
         sleep(60)
 
