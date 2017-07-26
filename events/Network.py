@@ -18,32 +18,17 @@ class Network(Server):
         ip, port = addr
 
         Global.PullConnsctions.append(channel)
-
-        id = Global.game.addPlayer()
-
-        # thread = Thread(target = self.sendDataToClients, args=(channel,))
-        # thread.setDaemon(True)
-        # thread.start()
+        index = Global.PullConnsctions.index(channel)
 
         channel.Send({
             'action': Global.NetworkActions.INIT,
-            'id': id
+            'connection_index': index
         })
 
         channel.Send({
             'action': Global.NetworkActions.INIT,
             'walls': Global.game.wallsObjects(),
         })
-
-        # Global.Queue.append({
-        #     'action': Global.NetworkActions.INIT,
-        #     'id': id
-        # })
-        #
-        # Global.Queue.append({
-        #     'action': Global.NetworkActions.INIT,
-        #     'walls': Global.game.wallsObjects(),
-        # })
 
     def close(self):
         Server.close(self)

@@ -8,6 +8,7 @@ from gameObjects.Map import Map
 
 from gameObjects.Tank import Tank
 from helper import Global
+from helper.TankHelper import TankHelper
 from movingHandlers.BotTankMovingHandlers import BotTankMovingHandlers
 
 
@@ -44,8 +45,8 @@ class Game:
 
         return tank.id
 
-    def addPlayer(self):
-        tank = Tank()
+    def addPlayer(self, type):
+        tank = TankHelper.getSpriteByTank(type)
         tank.id = self.getNextId()
         tank.clan = 1
         tank.setPosition(self.getPlayerPosition())

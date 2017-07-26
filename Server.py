@@ -67,6 +67,9 @@ def addUnits():
         #Global.game.addBot(position=(800,600), clan=2, type=2)
         #Global.game.addBot(position=(1100,600), clan=2, type=2)
         Global.game.addBot(position=(800,600), clan=2, type=2)
+        Global.game.addBot(position=(900,600), clan=2, type=2)
+        Global.game.addBot(position=(1000,600), clan=2, type=2)
+        Global.game.addBot(position=(1100,600), clan=2, type=2)
 
         sleep(60)
 

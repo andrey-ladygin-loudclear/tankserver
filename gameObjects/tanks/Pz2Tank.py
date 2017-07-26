@@ -1,9 +1,9 @@
 from gameObjects.Tank import Tank
 
 
-class ETank(Tank):
+class Pz2Tank(Tank):
 
-    type = 1
+    type = 6
 
     def __init__(self):
         Tank.__init__(self)
